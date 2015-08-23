@@ -172,6 +172,14 @@ public class Device {
         return String.format("%s %s (%s)", manufacturer, model, device);
     }
 
+    /**
+     * @return A string, formatted as - manufacturer model <br/>
+     * Example: OPPO Find7
+     */
+    public String getModelStringShort() {
+        return String.format("%s %s", manufacturer, model);
+    }
+
     private boolean isSELinuxEnforcing() {
         // We know about a 4.2 release, which has enforcing selinux
         if (Build.VERSION.SDK_INT >= 17) {
