@@ -50,15 +50,25 @@ public class KernelInfo {
         return new Gson().toJson(this, KernelInfo.class);
     }
 
-    public static boolean feedWithInformation(final Context context, final Device.KernelInfoListener kernelInfoListener) {
+    public static void feedWithInformation(final Context context, final Device.KernelInfoListener kernelInfoListener) {
+        final Thread feedThread = new Thread(new Runnable() {
+            @Override public void run() {
+                feedWithInformationBlocking(context, kernelInfoListener);
+            }
+        });
+        feedThread.start();
+    }
+
+    public static void feedWithInformationBlocking(final Context context, final Device.KernelInfoListener kernelInfoListener) {
         final String content = IoUtils.readFile(PATH_PROC_VERSION);
         if (!TextUtils.isEmpty(content)) {
-            return feedWithInformation(content, kernelInfoListener);
+            feedWithInformation(content, kernelInfoListener);
+            return;
         }
 
         // If we could not read the file and we do not have root, then we can not read it...
         if (!Device.isRooted()) {
-            return false;
+            return;
         }
 
         final Command cmd = IoUtils.readFileRoot(context, PATH_PROC_VERSION, new IoUtils.ReadFileListener() {
@@ -68,14 +78,12 @@ public class KernelInfo {
         });
         if (cmd == null) {
             Logger.e(TAG, "Could not read file with root!");
-            return false;
         }
-        return true;
     }
 
-    private static boolean feedWithInformation(String content, Device.KernelInfoListener listener) {
+    private static void feedWithInformation(String content, Device.KernelInfoListener listener) {
         if (TextUtils.isEmpty(content)) {
-            return false;
+            return;
         }
 
         // replace new lines as the readFile method appends a new line
@@ -97,7 +105,7 @@ public class KernelInfo {
         final Matcher m = Pattern.compile(PROC_VERSION_REGEX).matcher(content);
         if (!m.matches() || m.groupCount() < 6) {
             Logger.e(TAG, "Regex does not match!");
-            return false;
+            return;
         }
 
         final KernelInfo info = new KernelInfo();
@@ -135,8 +143,6 @@ public class KernelInfo {
         if (listener != null) {
             listener.onKernelInfoAvailable(info);
         }
-
-        return true;
     }
 
 }

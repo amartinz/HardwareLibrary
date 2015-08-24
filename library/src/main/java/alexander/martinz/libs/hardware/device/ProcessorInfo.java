@@ -68,32 +68,40 @@ public class ProcessorInfo {
         return new Gson().toJson(this, ProcessorInfo.class);
     }
 
-    public static boolean feedWithInformation(final Context context, final Device.ProcessorInfoListener processorInfoListener) {
+    public static void feedWithInformation(final Context context, final Device.ProcessorInfoListener processorInfoListener) {
+        final Thread feedThread = new Thread(new Runnable() {
+            @Override public void run() {
+                feedWithInformationBlocking(context, processorInfoListener);
+            }
+        });
+        feedThread.start();
+    }
+
+    public static void feedWithInformationBlocking(final Context context, final Device.ProcessorInfoListener procInfoListener) {
         final String content = IoUtils.readFile(PATH_PROC_CPU);
         if (!TextUtils.isEmpty(content)) {
-            return feedWithInformation(content, processorInfoListener);
+            feedWithInformation(content, procInfoListener);
+            return;
         }
 
         // If we could not read the file and we do not have root, then we can not read it...
         if (!Device.isRooted()) {
-            return false;
+            return;
         }
 
         final Command cmd = IoUtils.readFileRoot(context, PATH_PROC_CPU, new IoUtils.ReadFileListener() {
             @Override public void onFileRead(String path, String content) {
-                feedWithInformation(content, processorInfoListener);
+                feedWithInformation(content, procInfoListener);
             }
         });
         if (cmd == null) {
             Logger.e(TAG, "Could not read file with root!");
-            return false;
         }
-        return true;
     }
 
-    private static boolean feedWithInformation(String content, Device.ProcessorInfoListener listener) {
+    private static void feedWithInformation(String content, Device.ProcessorInfoListener listener) {
         if (TextUtils.isEmpty(content)) {
-            return false;
+            return;
         }
 
         final ProcessorInfo processorInfo = new ProcessorInfo();
@@ -114,8 +122,6 @@ public class ProcessorInfo {
         if (listener != null) {
             listener.onProcessorInfoAvailable(processorInfo);
         }
-
-        return true;
     }
 
     @NonNull private static String getData(final String data) {

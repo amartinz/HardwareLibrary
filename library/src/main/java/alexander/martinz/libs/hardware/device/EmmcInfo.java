@@ -58,11 +58,19 @@ public class EmmcInfo {
         rev = ((cid != null && cid.length() > 20) ? cid.substring(18, 20) : "-");
     }
 
-    public static boolean feedWithInformation(final Context context, final Device.EmmcInfoListener emmcInfoListener) {
+    public static void feedWithInformation(final Context context, final Device.EmmcInfoListener emmcInfoListener) {
+        final Thread feedThread = new Thread(new Runnable() {
+            @Override public void run() {
+                feedWithInformationBlocking(context, emmcInfoListener);
+            }
+        });
+        feedThread.start();
+    }
+
+    public static void feedWithInformationBlocking(final Context context, final Device.EmmcInfoListener emmcInfoListener) {
         if (emmcInfoListener != null) {
             emmcInfoListener.onEmmcInfoAvailable(new EmmcInfo());
         }
-        return true;
     }
 
     public boolean canBrick() {
