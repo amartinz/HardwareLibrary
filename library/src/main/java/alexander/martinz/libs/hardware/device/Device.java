@@ -27,8 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
@@ -47,9 +45,6 @@ public class Device {
     @SerializedName("screen_width") public final int screenWidth;
     @SerializedName("screen_height") public final int screenHeight;
 
-    @SerializedName("is_64_bit") public final boolean deviceIs64Bit;
-    @SerializedName("supported_abis") public final String deviceSupportedAbis;
-
     @SerializedName("android_id") public final String androidId;
     @SerializedName("manufacturer") public final String manufacturer;
     @SerializedName("model") public final String model;
@@ -67,6 +62,14 @@ public class Device {
     private static Device sInstance;
     private Context mContext;
 
+    public interface KernelInfoListener {
+        void onKernelInfoAvailable(@NonNull KernelInfo kernelInfo);
+    }
+
+    public interface ProcessorInfoListener {
+        void onProcessorInfoAvailable(@NonNull ProcessorInfo processorInfo);
+    }
+
     protected Device(@NonNull Context context) {
         mContext = context;
 
@@ -78,22 +81,6 @@ public class Device {
 
         vmVersion = System.getProperty("java.vm.version", "-");
         vmLibrary = getRuntime();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            deviceIs64Bit = Build.SUPPORTED_64_BIT_ABIS.length != 0;
-            String abis = "";
-            int length = Build.SUPPORTED_ABIS.length;
-            for (int i = 0; i < length; i++) {
-                abis += Build.SUPPORTED_ABIS[i];
-                if (i + 1 != length) {
-                    abis += ", ";
-                }
-            }
-            deviceSupportedAbis = abis;
-        } else {
-            deviceIs64Bit = false;
-            deviceSupportedAbis = String.format("%s, %s", Build.CPU_ABI, Build.CPU_ABI2);
-        }
 
         final Resources res = context.getResources();
         screenWidth = res.getDisplayMetrics().widthPixels;
@@ -142,15 +129,6 @@ public class Device {
         isSELinuxEnforcing = isSELinuxEnforcing(); // ehm, alright, if you say so...
 
         return this;
-    }
-
-    public List<String> deviceAbisAsList() {
-        final ArrayList<String> list = new ArrayList<>();
-        final String[] abis = deviceSupportedAbis.split(",");
-        for (final String abi : abis) {
-            list.add(abi.trim());
-        }
-        return list;
     }
 
     @NonNull private String getRuntime() {
