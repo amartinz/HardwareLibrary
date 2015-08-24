@@ -73,7 +73,7 @@ public class KernelInfo {
         return true;
     }
 
-    public static boolean feedWithInformation(String content, Device.KernelInfoListener listener) {
+    private static boolean feedWithInformation(String content, Device.KernelInfoListener listener) {
         if (TextUtils.isEmpty(content)) {
             return false;
         }

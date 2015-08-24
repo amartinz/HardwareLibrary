@@ -62,6 +62,10 @@ public class Device {
     private static Device sInstance;
     private Context mContext;
 
+    public interface EmmcInfoListener {
+        void onEmmcInfoAvailable(@NonNull EmmcInfo emmcInfo);
+    }
+
     public interface KernelInfoListener {
         void onKernelInfoAvailable(@NonNull KernelInfo kernelInfo);
     }

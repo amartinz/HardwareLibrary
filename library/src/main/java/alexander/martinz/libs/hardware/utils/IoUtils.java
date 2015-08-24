@@ -51,6 +51,11 @@ public class IoUtils {
         return ((content != null) ? content.trim() : null);
     }
 
+    @Nullable public static String readOneLine(final String path) {
+        final String content = readFileInternal(path, true);
+        return ((content != null) ? content.trim() : null);
+    }
+
     @Nullable public static Command readFileRoot(@NonNull final Context context, @NonNull final String path,
             @Nullable final ReadFileListener readFileListener) {
         if (!Device.isRooted() || readFileListener == null) {

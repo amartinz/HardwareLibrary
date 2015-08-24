@@ -91,7 +91,7 @@ public class ProcessorInfo {
         return true;
     }
 
-    public static boolean feedWithInformation(String content, Device.ProcessorInfoListener listener) {
+    private static boolean feedWithInformation(String content, Device.ProcessorInfoListener listener) {
         if (TextUtils.isEmpty(content)) {
             return false;
         }
@@ -110,7 +110,6 @@ public class ProcessorInfo {
                 processorInfo.hardware = getData(s);
             }
         }
-
 
         if (listener != null) {
             listener.onProcessorInfoAvailable(processorInfo);
