@@ -70,6 +70,10 @@ public class Device {
         void onKernelInfoAvailable(@NonNull KernelInfo kernelInfo);
     }
 
+    public interface MemoryInfoListener {
+        void onMemoryInfoAvailable(@NonNull MemoryInfo memoryInfo);
+    }
+
     public interface ProcessorInfoListener {
         void onProcessorInfoAvailable(@NonNull ProcessorInfo processorInfo);
     }

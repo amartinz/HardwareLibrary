@@ -33,7 +33,30 @@ public class Utils {
         try {
             return Integer.parseInt(toParse);
         } catch (NumberFormatException nfe) {
-            Logger.e(TAG, "Could not parse as integer", nfe);
+            Logger.e(TAG, "Could not parse as Integer", nfe);
+        }
+        return null;
+    }
+
+    public static long tryParseLong(final String toParse) {
+        final Long longRaw = tryParseLongRaw(toParse);
+        if (longRaw == null) {
+            return Constants.INVALID;
+        }
+        return longRaw;
+    }
+
+    @Nullable public static Long tryParseLongRaw(String toParse) {
+        if (toParse != null) {
+            toParse = toParse.trim();
+        }
+        if (TextUtils.isEmpty(toParse)) {
+            return null;
+        }
+        try {
+            return Long.parseLong(toParse);
+        } catch (NumberFormatException nfe) {
+            Logger.e(TAG, "Could not parse as Long", nfe);
         }
         return null;
     }
