@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2013 - 2015 Alexander Martinz
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <!-- GPU -->
+    <!-- Base paths, the other paths use this one + their path.
+         for example: /sys/class/kgsl + /kgsl-3d0/pwrscale/trustzone/governor -->
+    <string-array name="gpu_base" translatable="false">
+        <item>/sys/class/kgsl/kgsl-3d0</item>
+        <item>/sys/devices/platform/galcore/gpu/gpu0/gpufreq</item>
+    </string-array>
+    <!-- Governor -->
+    <string-array name="gpu_gov_path" translatable="false">
+        <item>/pwrscale/trustzone/governor</item>
+        <item>/devfreq/governor</item>
+        <item>/scaling_cur_governor</item>
+        <item>/scaling_governor</item>
+    </string-array>
+    <string-array name="gpu_govs_avail_path" translatable="false">
+        <item>/devfreq/available_governors</item>
+        <item>/scaling_available_governors</item>
+    </string-array>
+    <!-- Frequencies -->
+    <string-array name="gpu_freqs_avail" translatable="false">
+        <item>/gpu_available_frequencies</item>
+        <item>/devfreq/available_frequencies</item>
+        <item>/scaling_available_frequencies</item>
+    </string-array>
+    <string-array name="gpu_freqs_cur" translatable="false">
+        <item>/devfreq/cur_freq</item>
+    </string-array>
+    <string-array name="gpu_freqs_max" translatable="false">
+        <item>/max_gpuclk</item>
+        <item>/devfreq/max_freq</item>
+        <item>/scaling_max_freq</item>
+    </string-array>
+    <string-array name="gpu_freqs_min" translatable="false">
+        <item>/min_gpuclk</item>
+        <item>/devfreq/min_freq</item>
+        <item>/scaling_min_freq</item>
+    </string-array>
+</resources>

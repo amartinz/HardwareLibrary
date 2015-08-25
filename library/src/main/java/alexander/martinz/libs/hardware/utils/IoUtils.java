@@ -1,6 +1,7 @@
 package alexander.martinz.libs.hardware.utils;
 
 import android.content.Context;
+import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -38,6 +39,34 @@ public class IoUtils {
         void onFileRead(String path, String content);
     }
 
+    public static String getPath(@NonNull Context context, @ArrayRes int filePathResId) {
+        return getPath(context, filePathResId, null);
+    }
+
+    public static String getPath(@NonNull Context context, @ArrayRes int filePathResId, @Nullable String prefix) {
+        final boolean hasPrefix = !TextUtils.isEmpty(prefix);
+        final String[] paths = context.getResources().getStringArray(filePathResId);
+
+        String basePath = null;
+        for (String path : paths) {
+            if (hasPrefix) {
+                path = prefix + path;
+            }
+            if (IoUtils.fileExists(path)) {
+                basePath = path;
+                break;
+            }
+        }
+        if (TextUtils.isEmpty(basePath)) {
+            return "";
+        }
+        return basePath;
+    }
+
+    public static boolean fileExists(@Nullable String filePath) {
+        return !TextUtils.isEmpty(filePath) && new File(filePath.trim()).exists();
+    }
+
     public static int readSysfsIntValue(final String path) {
         final String rawString = IoUtils.readFile(path);
         if (!TextUtils.isEmpty(rawString)) {
@@ -56,9 +85,9 @@ public class IoUtils {
         return ((content != null) ? content.trim() : null);
     }
 
-    @Nullable public static Command readFileRoot(@NonNull final Context context, @NonNull final String path,
+    @Nullable public static Command readFileRoot(@NonNull final Context context, @Nullable final String path,
             @Nullable final ReadFileListener readFileListener) {
-        if (!Device.isRooted() || readFileListener == null) {
+        if (TextUtils.isEmpty(path) || readFileListener == null || !Device.isRooted()) {
             return null;
         }
 

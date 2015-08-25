@@ -1,0 +1,181 @@
+/*
+ * Copyright (C) 2013 - 2015 Alexander Martinz
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package alexander.martinz.libs.hardware.gpu;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import alexander.martinz.libs.execution.Command;
+import alexander.martinz.libs.hardware.Constants;
+import alexander.martinz.libs.hardware.R;
+import alexander.martinz.libs.hardware.utils.IoUtils;
+import alexander.martinz.libs.hardware.utils.Utils;
+import alexander.martinz.libs.logger.Logger;
+
+public class GpuReader {
+    private static final String TAG = GpuReader.class.getSimpleName();
+
+    private static String basePath;
+    private static String freqAvailPath;
+    private static String freqCurPath;
+
+    private GpuReader() { }
+
+    public static void getGpuInformation(Context context, GpuInformationListener listener) {
+        final ReadGpuInformationThread thread = new ReadGpuInformationThread(context, listener);
+        thread.start();
+    }
+
+    public static GpuInformation getGpuInformationBlocking(Context context) {
+        final GpuInformation gpuInformation = new GpuInformation();
+
+        gpuInformation.freqAvailable = readAvailableFrequencies(context);
+        if (gpuInformation.freqAvailable.isEmpty()) {
+            gpuInformation.freqMax = Constants.INVALID;
+            gpuInformation.freqMin = Constants.INVALID;
+        } else {
+            gpuInformation.freqMax = gpuInformation.freqAvailable.get(gpuInformation.freqAvailable.size() - 1);
+            gpuInformation.freqMin = gpuInformation.freqAvailable.get(0);
+        }
+
+        gpuInformation.freqCur = IoUtils.readSysfsIntValue(getFreqCurPath(context));
+
+        return gpuInformation;
+    }
+
+    @Nullable public static String getBasePath(Context context) {
+        if (basePath == null) {
+            basePath = IoUtils.getPath(context, R.array.gpu_base);
+        }
+        return basePath;
+    }
+
+    @Nullable public static String getFreqAvailPath(Context context) {
+        if (freqAvailPath == null) {
+            freqAvailPath = IoUtils.getPath(context, R.array.gpu_freqs_avail, getBasePath(context));
+        }
+        return freqAvailPath;
+    }
+
+    @Nullable public static String getFreqCurPath(Context context) {
+        if (freqCurPath == null) {
+            freqCurPath = IoUtils.getPath(context, R.array.gpu_freqs_cur, getBasePath(context));
+        }
+        return freqCurPath;
+    }
+
+    @NonNull private static ArrayList<Integer> readAvailableFrequencies(Context context) {
+        final String freqAvailPath = getFreqAvailPath(context);
+        return readAvailableFrequencies(IoUtils.readFile(freqAvailPath));
+    }
+
+    @NonNull private static ArrayList<Integer> readAvailableFrequencies(final String freqString) {
+        final ArrayList<Integer> availableFreqs = new ArrayList<>();
+        if (!TextUtils.isEmpty(freqString)) {
+            final String[] splitted = freqString.split(" ");
+            for (final String s : splitted) {
+                availableFreqs.add(Utils.tryParseInt(s));
+            }
+        }
+        if (!availableFreqs.isEmpty()) {
+            Collections.sort(availableFreqs);
+        }
+        return availableFreqs;
+    }
+
+    private static class ReadGpuInformationThread extends Thread {
+        private final Context context;
+        private final GpuInformationListener listener;
+
+        private GpuInformation gpuInformation;
+        private boolean hasFinished;
+
+        public ReadGpuInformationThread(Context context, GpuInformationListener listener) {
+            super();
+            this.context = context;
+            this.listener = listener;
+        }
+
+        @Override public void run() {
+            gpuInformation = getGpuInformationBlocking(context);
+            // if the gpu information contains an invalid value AND we are not using root, finish
+            if (gpuInformation.isValid() || !Constants.USE_ROOT) {
+                hasFinished = true;
+            } else {
+                gpuInformation.resetInvalid();
+            }
+
+            while (!hasFinished) {
+                if (gpuInformation.freqCur == Constants.NOT_INITIALIZED) {
+                    Command cmd = IoUtils.readFileRoot(context, getFreqCurPath(context), readFileListener);
+                    if (cmd == null) {
+                        Logger.e(this, "Could not read file with root!");
+                        break;
+                    } else {
+                        gpuInformation.freqCur = Constants.INITIALIZATION_STARTED;
+                    }
+                }
+                if ((gpuInformation.freqMax == Constants.NOT_INITIALIZED) ||
+                    (gpuInformation.freqMin == Constants.NOT_INITIALIZED)) {
+                    Command cmd = IoUtils.readFileRoot(context, getFreqAvailPath(context), readFileListener);
+                    if (cmd == null) {
+                        Logger.e(this, "Could not read file with root!");
+                        break;
+                    } else {
+                        gpuInformation.freqMin = Constants.INITIALIZATION_STARTED;
+                        gpuInformation.freqMax = Constants.INITIALIZATION_STARTED;
+                    }
+                }
+
+                // if we have read all values, we are done
+                hasFinished = !gpuInformation.isInitializing();
+            }
+
+            if (listener != null) {
+                listener.onGpuInformation(gpuInformation);
+            }
+        }
+
+        private final IoUtils.ReadFileListener readFileListener = new IoUtils.ReadFileListener() {
+            @Override public void onFileRead(String path, String content) {
+                if (TextUtils.isEmpty(path)) {
+                    return;
+                }
+                if (TextUtils.equals(getFreqAvailPath(context), path)) {
+                    final ArrayList<Integer> availableFreqs = readAvailableFrequencies(content);
+                    if (availableFreqs.isEmpty()) {
+                        gpuInformation.freqMax = Constants.INVALID;
+                        gpuInformation.freqMin = Constants.INVALID;
+                    } else {
+                        gpuInformation.freqMax = availableFreqs.get(availableFreqs.size() - 1);
+                        gpuInformation.freqMin = availableFreqs.get(0);
+                    }
+                } else if (TextUtils.equals(getFreqCurPath(context), path)) {
+                    gpuInformation.freqCur = Utils.tryParseInt(content);
+                }
+            }
+        };
+    }
+
+
+}
