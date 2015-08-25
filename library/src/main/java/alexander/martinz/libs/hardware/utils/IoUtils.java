@@ -67,6 +67,10 @@ public class IoUtils {
         return !TextUtils.isEmpty(filePath) && new File(filePath.trim()).exists();
     }
 
+    public static boolean fileExists(@Nullable File file) {
+        return file != null && file.exists();
+    }
+
     public static int readSysfsIntValue(final String path) {
         final String rawString = IoUtils.readFile(path);
         if (!TextUtils.isEmpty(rawString)) {
