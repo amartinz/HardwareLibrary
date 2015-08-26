@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import alexander.martinz.libs.hardware.Constants;
@@ -98,5 +99,25 @@ public class GpuInformation {
             return String.valueOf(value) + " MHz";
         }
         return null;
+    }
+
+    public static String listFrequenciesFormatted(@Nullable final List<Integer> freqAvail) {
+        if (freqAvail == null || freqAvail.isEmpty()) {
+            return "-";
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        final Iterator<Integer> iterator = freqAvail.iterator();
+        while (iterator.hasNext()) {
+            final Integer frequency = iterator.next();
+            if (frequency == null) {
+                continue;
+            }
+            sb.append(GpuInformation.toMhz(frequency.toString()));
+            if (iterator.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        return sb.toString().trim();
     }
 }
