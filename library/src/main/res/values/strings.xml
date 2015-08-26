@@ -1,8 +1,0 @@
-<resources>
-    <!-- OpenGL -->
-    <string name="hardware_gpu_vendor">GPU vendor</string>
-    <string name="hardware_gpu_renderer">GPU renderer</string>
-    <string name="hardware_opengl_version">OpenGL version</string>
-    <string name="hardware_opengl_extensions">OpenGL extensions</string>
-    <string name="hardware_shader_version">Shader version</string>
-</resources>
