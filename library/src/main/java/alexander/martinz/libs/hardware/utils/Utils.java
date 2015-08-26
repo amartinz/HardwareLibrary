@@ -4,7 +4,10 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import alexander.martinz.libs.hardware.Constants;
@@ -66,9 +69,13 @@ public class Utils {
             s = s.trim().toUpperCase();
             for (final String state : Constants.ENABLED_STATES) {
                 if (contains) {
-                    if (s.contains(state)) return true;
+                    if (s.contains(state)) {
+                        return true;
+                    }
                 } else {
-                    if (s.equals(state)) return true;
+                    if (s.equals(state)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -79,6 +86,20 @@ public class Utils {
         final Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(time);
         return DateFormat.format("dd-MM-yyyy", cal).toString();
+    }
+
+    public static List<Integer> stringToListInteger(@Nullable String arrayString) {
+        if (TextUtils.isEmpty(arrayString)) {
+            return Collections.emptyList();
+        }
+        final ArrayList<Integer> list = new ArrayList<>();
+        final String[] splitted = arrayString.trim().split(" ");
+        for (final String part : splitted) {
+            list.add(tryParseInt(part.trim()));
+        }
+
+        Collections.sort(list);
+        return list;
     }
 
 }
