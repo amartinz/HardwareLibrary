@@ -175,8 +175,10 @@ public class IoUtils {
             boolean useRootAsFallback) {
         final boolean useRoot = useRootAsFallback && (!file.canWrite() && Device.isRooted());
         if (useRoot) {
+            Logger.v(TAG, "writing to %s as root", file.getAbsolutePath());
             final RootShell rootShell = ShellManager.get(context).getRootShell();
             if (rootShell == null) {
+                Logger.w(TAG, "could not obtain root shell!");
                 return false;
             }
 
@@ -189,6 +191,7 @@ public class IoUtils {
             Logger.v(TAG, "write command \"%s\" ended with exit code -> %s", id, exitCode);
             return (exitCode == 0);
         } else {
+            Logger.v(TAG, "writing to %s", file.getAbsolutePath());
             FileWriter fw = null;
             try {
                 fw = new FileWriter(file);
@@ -196,7 +199,8 @@ public class IoUtils {
             } catch (IOException ioe) {
                 Logger.e(TAG, "could not write to file %s", file.getAbsolutePath());
                 if (Logger.getEnabled()) {
-                    ioe.printStackTrace();
+                    Logger.e(TAG, "exists: %s | can read: %s | can write: %s", file.exists(), file.canRead(), file.canWrite());
+                    Logger.e(TAG, "Reason", ioe);
                 }
                 return false;
             } finally {
