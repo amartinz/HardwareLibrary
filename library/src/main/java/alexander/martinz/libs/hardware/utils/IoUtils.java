@@ -10,8 +10,10 @@ import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Random;
 
 import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.execution.RootShell;
@@ -22,6 +24,8 @@ import alexander.martinz.libs.logger.Logger;
 
 public class IoUtils {
     private static final String TAG = IoUtils.class.getSimpleName();
+
+    private static final Random sRandom = new Random(System.nanoTime());
 
     public static void closeQuietly(final Object o) {
         if (o instanceof Socket) {
@@ -152,5 +156,53 @@ public class IoUtils {
             Logger.w(TAG, "Can not read file -> %s", path);
         }
         return null;
+    }
+
+    public static boolean writeToFile(@NonNull Context context, @NonNull String path, @NonNull String content) {
+        return writeToFile(context, path, content, true);
+    }
+
+    public static boolean writeToFile(@NonNull Context context, @NonNull String path, @NonNull String content,
+            boolean useRootAsFallback) {
+        return writeToFile(context, new File(path), content, useRootAsFallback);
+    }
+
+    public static boolean writeToFile(@NonNull Context context, @NonNull File file, @NonNull String content) {
+        return writeToFile(context, file, content, true);
+    }
+
+    public static boolean writeToFile(@NonNull Context context, @NonNull File file, @NonNull String content,
+            boolean useRootAsFallback) {
+        final boolean useRoot = useRootAsFallback && (!file.canWrite() && Device.isRooted());
+        if (useRoot) {
+            final RootShell rootShell = ShellManager.get(context).getRootShell();
+            if (rootShell == null) {
+                return false;
+            }
+
+            final int id = sRandom.nextInt(1000);
+            final String cmd = String.format("echo \'%s\' > %s", content, file.getAbsolutePath());
+            final Command writeCommand = new Command(id, cmd);
+            rootShell.add(writeCommand);
+
+            final int exitCode = writeCommand.waitFor().getExitCode();
+            Logger.v(TAG, "write command \"%s\" ended with exit code -> %s", id, exitCode);
+            return (exitCode == 0);
+        } else {
+            FileWriter fw = null;
+            try {
+                fw = new FileWriter(file);
+                fw.write(content);
+            } catch (IOException ioe) {
+                Logger.e(TAG, "could not write to file %s", file.getAbsolutePath());
+                if (Logger.getEnabled()) {
+                    ioe.printStackTrace();
+                }
+                return false;
+            } finally {
+                closeQuietly(fw);
+            }
+        }
+        return true;
     }
 }
