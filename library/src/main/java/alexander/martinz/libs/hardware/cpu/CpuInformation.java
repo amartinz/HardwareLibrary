@@ -30,6 +30,9 @@ import alexander.martinz.libs.logger.Logger;
 public class CpuInformation {
     private static final String TAG = CpuInformation.class.getSimpleName();
 
+    // TODO: improve octa core support
+    public boolean isOctaCore;
+
     public int coreCount = Constants.NOT_INITIALIZED;
 
     public List<Integer> freqAvail;

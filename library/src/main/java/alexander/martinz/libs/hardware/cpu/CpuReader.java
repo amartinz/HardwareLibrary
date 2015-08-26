@@ -21,6 +21,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,10 +38,11 @@ public class CpuReader {
     private static final String PATH_COUNT = PATH_BASE + "present";
 
     //private static final String PATH_CORE_ONLINE = PATH_BASE + "cpu%s/online";
-    private static final String PATH_CORE_FREQ_AVAIL = PATH_BASE + "cpu%s/cpufreq/scaling_available_frequencies";
-    private static final String PATH_CORE_FREQ_CUR = PATH_BASE + "cpu%s/cpufreq/scaling_cur_freq";
-    private static final String PATH_CORE_FREQ_MAX = PATH_BASE + "cpu%s/cpufreq/scaling_max_freq";
-    private static final String PATH_CORE_FREQ_MIN = PATH_BASE + "cpu%s/cpufreq/scaling_min_freq";
+    private static final String PATH_CORE_BASE = PATH_BASE + "cpu%s/";
+    private static final String PATH_CORE_FREQ_AVAIL = PATH_CORE_BASE + "cpufreq/scaling_available_frequencies";
+    private static final String PATH_CORE_FREQ_CUR = PATH_CORE_BASE + "cpufreq/scaling_cur_freq";
+    private static final String PATH_CORE_FREQ_MAX = PATH_CORE_BASE + "cpufreq/scaling_max_freq";
+    private static final String PATH_CORE_FREQ_MIN = PATH_CORE_BASE + "cpufreq/scaling_min_freq";
 
     // TODO: own file?
     //public static final String PATH_FREQ_TIME_IN_STATE = PATH_BASE + "cpu0/cpufreq/stats/time_in_state";
@@ -58,10 +60,31 @@ public class CpuReader {
         final CpuInformation cpuInformation = new CpuInformation();
 
         cpuInformation.coreCount = readAvailableCores();
-        cpuInformation.freqAvail = readAvailableFrequency(0);
-        cpuInformation.freqCur = readCurrentFrequency(0);
-        cpuInformation.freqMax = readMaxFrequency(0);
-        cpuInformation.freqMin = readMinFrequency(0);
+        cpuInformation.isOctaCore = cpuInformation.coreCount > 4;
+
+        // some octa core cpus are buggy and need special treatment
+        if (cpuInformation.isOctaCore) {
+            Logger.v(TAG, "using special octa core treatment");
+            int cpuToReadFrom = 0;
+            for (; cpuToReadFrom < 4; cpuToReadFrom++) {
+                final File cpuFreqDir = new File(getPathCoreBase(cpuToReadFrom), "cpufreq");
+                if (cpuFreqDir.exists()) {
+                    Logger.v(TAG, "cpu%s exists!", cpuToReadFrom);
+                    break;
+                }
+            }
+            Logger.v(TAG, "Using cpu%s to read from", cpuToReadFrom);
+
+            cpuInformation.freqAvail = readAvailableFrequency(cpuToReadFrom);
+            cpuInformation.freqCur = readCurrentFrequency(cpuToReadFrom);
+            cpuInformation.freqMax = readMaxFrequency(cpuToReadFrom);
+            cpuInformation.freqMin = readMinFrequency(cpuToReadFrom);
+        } else {
+            cpuInformation.freqAvail = readAvailableFrequency(0);
+            cpuInformation.freqCur = readCurrentFrequency(0);
+            cpuInformation.freqMax = readMaxFrequency(0);
+            cpuInformation.freqMin = readMinFrequency(0);
+        }
 
         cpuInformation.temperature = readTemperature();
 
@@ -118,6 +141,10 @@ public class CpuReader {
 
     private static int readMinFrequency(int cpuCore) {
         return IoUtils.readSysfsIntValue(getPathCoreFreqMin(cpuCore));
+    }
+
+    private static String getPathCoreBase(int cpuCore) {
+        return String.format(PATH_CORE_BASE, cpuCore);
     }
 
     private static String getPathCoreFreqAvail(int cpuCore) {
