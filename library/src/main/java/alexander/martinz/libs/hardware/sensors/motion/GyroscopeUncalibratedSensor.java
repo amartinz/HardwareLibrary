@@ -67,7 +67,7 @@ public class GyroscopeUncalibratedSensor extends BaseSensor {
         final float z = event.values[2];
         mValue.post(new Runnable() {
             @Override public void run() {
-                mValue.setText(String.format("x: %s rad/s\ny: %s rad/s\nz: %s rad/s", x, y, z));
+                mValue.setText(String.format("x: %.3f rad/s\ny: %.3f rad/s\nz: %.3f rad/s", x, y, z));
             }
         });
     }

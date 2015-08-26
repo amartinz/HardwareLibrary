@@ -67,7 +67,7 @@ public class MagneticFieldUncalibratedSensor extends BaseSensor {
         final float z = event.values[2];
         mValue.post(new Runnable() {
             @Override public void run() {
-                mValue.setText(String.format("x: %s μT\ny: %s μT\nz: %s μT", x, y, z));
+                mValue.setText(String.format("x: %.3f μT\ny: %.3f μT\nz: %.3f μT", x, y, z));
             }
         });
     }

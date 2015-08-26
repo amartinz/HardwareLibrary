@@ -59,7 +59,7 @@ public class RelativeHumiditySensor extends BaseSensor {
         final float value = event.values[0];
         mValue.post(new Runnable() {
             @Override public void run() {
-                mValue.setText(String.format("%s", value) + " %");
+                mValue.setText(String.format("%.3f %%", value));
             }
         });
     }

@@ -65,8 +65,7 @@ public class StepSensor extends BaseSensor {
         final int steps = (int) event.values[0];
         mSteps.post(new Runnable() {
             @Override public void run() {
-                mSteps.setText(String.format("%s %s", steps,
-                        getResources().getString(R.string.hardware_steps)));
+                mSteps.setText(String.format("%s %s", steps, getResources().getString(R.string.hardware_steps)));
             }
         });
     }

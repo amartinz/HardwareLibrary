@@ -60,7 +60,7 @@ public class AmbientTemperatureSensor extends BaseSensor {
         final float fahrenheit = ((value * 9.0f / 5.0f) + 32.0f);
         mValue.post(new Runnable() {
             @Override public void run() {
-                mValue.setText(String.format("%s °C\n%s °F", value, fahrenheit));
+                mValue.setText(String.format("%.3f °C\n%.3f °F", value, fahrenheit));
             }
         });
     }

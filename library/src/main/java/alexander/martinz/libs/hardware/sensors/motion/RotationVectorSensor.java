@@ -69,7 +69,7 @@ public class RotationVectorSensor extends BaseSensor {
         }
         mValue.post(new Runnable() {
             @Override public void run() {
-                mValue.setText(String.format("x: %s\ny: %s\nz: %s\nscalar: %s", x, y, z, scalar));
+                mValue.setText(String.format("x: %.3f\ny: %s\nz: %.3f\nscalar: %.3f", x, y, z, scalar));
             }
         });
     }

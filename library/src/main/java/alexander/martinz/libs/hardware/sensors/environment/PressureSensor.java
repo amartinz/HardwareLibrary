@@ -61,7 +61,7 @@ public class PressureSensor extends BaseSensor {
         final float value = event.values[0];
         mValue.post(new Runnable() {
             @Override public void run() {
-                mValue.setText(String.format("%s\n\n%s", value, mNote));
+                mValue.setText(String.format("%.3f\n\n%s", value, mNote));
             }
         });
     }

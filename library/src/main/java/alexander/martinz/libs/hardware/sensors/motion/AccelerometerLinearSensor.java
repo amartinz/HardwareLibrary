@@ -61,7 +61,7 @@ public class AccelerometerLinearSensor extends BaseSensor {
         final float z = event.values[2];
         mValue.post(new Runnable() {
             @Override public void run() {
-                mValue.setText(String.format("x: %s m/s²\ny: %s m/s²\nz: %s m/s²", x, y, z));
+                mValue.setText(String.format("x: %.3f m/s²\ny: %.3f m/s²\nz: %.3f m/s²", x, y, z));
             }
         });
     }
