@@ -18,6 +18,7 @@
 package alexander.martinz.libs.hardware.device;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -69,12 +70,11 @@ public class ProcessorInfo {
     }
 
     public static void feedWithInformation(final Context context, final Device.ProcessorInfoListener processorInfoListener) {
-        final Thread feedThread = new Thread(new Runnable() {
+        AsyncTask.execute(new Runnable() {
             @Override public void run() {
                 feedWithInformationBlocking(context, processorInfoListener);
             }
         });
-        feedThread.start();
     }
 
     public static void feedWithInformationBlocking(final Context context, final Device.ProcessorInfoListener procInfoListener) {

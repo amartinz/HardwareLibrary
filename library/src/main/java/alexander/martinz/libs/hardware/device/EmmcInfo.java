@@ -18,6 +18,7 @@
 package alexander.martinz.libs.hardware.device;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -60,12 +61,11 @@ public class EmmcInfo {
     }
 
     public static void feedWithInformation(final Context context, final Device.EmmcInfoListener emmcInfoListener) {
-        final Thread feedThread = new Thread(new Runnable() {
+        AsyncTask.execute(new Runnable() {
             @Override public void run() {
                 feedWithInformationBlocking(context, emmcInfoListener);
             }
         });
-        feedThread.start();
     }
 
     public static void feedWithInformationBlocking(final Context context, final Device.EmmcInfoListener emmcInfoListener) {

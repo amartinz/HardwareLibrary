@@ -18,6 +18,7 @@
 package alexander.martinz.libs.hardware.cpu;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -52,8 +53,7 @@ public class CpuReader {
     private CpuReader() { }
 
     public static void getCpuInformation(Context context, CpuInformationListener listener) {
-        final ReadCpuInformationThread thread = new ReadCpuInformationThread(context, listener);
-        thread.start();
+        AsyncTask.execute(new ReadCpuInformationRunnable(context, listener));
     }
 
     public static CpuInformation getCpuInformationBlocking() {
@@ -163,7 +163,7 @@ public class CpuReader {
         return String.format(PATH_CORE_FREQ_MIN, cpuCore);
     }
 
-    private static class ReadCpuInformationThread extends Thread {
+    private static class ReadCpuInformationRunnable implements Runnable {
         private static final String T_PATH_COUNT = PATH_COUNT;
         private static final String T_PATH_FREQ_AVAIL = getPathCoreFreqAvail(0);
         private static final String T_PATH_FREQ_CUR = getPathCoreFreqCur(0);
@@ -178,7 +178,7 @@ public class CpuReader {
         private CpuInformation cpuInformation;
         private boolean hasFinished;
 
-        public ReadCpuInformationThread(Context context, CpuInformationListener listener) {
+        public ReadCpuInformationRunnable(Context context, CpuInformationListener listener) {
             super();
             this.context = context;
             this.listener = listener;

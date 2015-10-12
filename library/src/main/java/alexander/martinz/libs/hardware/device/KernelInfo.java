@@ -18,6 +18,7 @@
 package alexander.martinz.libs.hardware.device;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -51,12 +52,11 @@ public class KernelInfo {
     }
 
     public static void feedWithInformation(final Context context, final Device.KernelInfoListener kernelInfoListener) {
-        final Thread feedThread = new Thread(new Runnable() {
+        AsyncTask.execute(new Runnable() {
             @Override public void run() {
                 feedWithInformationBlocking(context, kernelInfoListener);
             }
         });
-        feedThread.start();
     }
 
     public static void feedWithInformationBlocking(final Context context, final Device.KernelInfoListener kernelInfoListener) {

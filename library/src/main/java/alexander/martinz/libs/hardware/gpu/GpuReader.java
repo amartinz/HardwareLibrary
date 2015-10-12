@@ -18,6 +18,7 @@
 package alexander.martinz.libs.hardware.gpu;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -42,8 +43,7 @@ public class GpuReader {
     private GpuReader() { }
 
     public static void getGpuInformation(Context context, GpuInformationListener listener) {
-        final ReadGpuInformationThread thread = new ReadGpuInformationThread(context, listener);
-        thread.start();
+        AsyncTask.execute(new ReadGpuInformationRunnable(context, listener));
     }
 
     public static GpuInformation getGpuInformationBlocking(Context context) {
@@ -103,14 +103,14 @@ public class GpuReader {
         return availableFreqs;
     }
 
-    private static class ReadGpuInformationThread extends Thread {
+    private static class ReadGpuInformationRunnable implements Runnable {
         private final Context context;
         private final GpuInformationListener listener;
 
         private GpuInformation gpuInformation;
         private boolean hasFinished;
 
-        public ReadGpuInformationThread(Context context, GpuInformationListener listener) {
+        public ReadGpuInformationRunnable(Context context, GpuInformationListener listener) {
             super();
             this.context = context;
             this.listener = listener;

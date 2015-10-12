@@ -18,6 +18,7 @@
 package alexander.martinz.libs.hardware.device;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -50,12 +51,11 @@ public class MemoryInfo {
     }
 
     public static void feedWithInformation(final Context context, final int type, final Device.MemoryInfoListener listener) {
-        final Thread feedThread = new Thread(new Runnable() {
+        AsyncTask.execute(new Runnable() {
             @Override public void run() {
                 feedWithInformationBlocking(context, type, listener);
             }
         });
-        feedThread.start();
     }
 
     public static void feedWithInformationBlocking(Context context, int type, Device.MemoryInfoListener listener) {
