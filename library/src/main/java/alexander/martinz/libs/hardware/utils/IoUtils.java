@@ -30,6 +30,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import alexander.martinz.libs.execution.Command;
@@ -38,6 +40,7 @@ import alexander.martinz.libs.execution.ShellManager;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.device.Device;
 import alexander.martinz.libs.logger.Logger;
+import hugo.weaving.DebugLog;
 
 public class IoUtils {
     private static final String TAG = IoUtils.class.getSimpleName();
@@ -92,6 +95,68 @@ public class IoUtils {
         return file != null && file.exists();
     }
 
+    public static boolean fileExists(final String[] files) {
+        for (final String s : files) {
+            if (fileExists(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Nullable public static String checkPaths(final String[] paths) {
+        for (final String s : paths) {
+            if (fileExists(s)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    @Nullable public static String checkPath(final String path) {
+        if (fileExists(path)) {
+            return path;
+        }
+        return null;
+    }
+
+    @NonNull public static List<String> listFiles(@NonNull String pathToDirectory) {
+        return listFiles(new File(pathToDirectory));
+    }
+
+    @NonNull public static List<String> listFiles(@NonNull File directory) {
+        return listFiles(directory, false);
+    }
+
+    @DebugLog @NonNull public static List<String> listFiles(@NonNull File directory, boolean withRootFallback) {
+        final ArrayList<String> files = new ArrayList<>();
+        final File[] listedFiles = directory.listFiles();
+        if (listedFiles != null) {
+            for (final File file : listedFiles) {
+                files.add(file.getName());
+            }
+        } else if (withRootFallback) {
+            final RootShell rootShell = ShellManager.get().getRootShell();
+            if (rootShell == null) {
+                Logger.w(TAG, "could not obtain root shell");
+            } else {
+                final Command command = new Command(String.format("ls %s", directory.getAbsolutePath())) {
+                    @Override public void onCommandOutput(int id, String line) {
+                        super.onCommandOutput(id, line);
+                        if (line != null && !(line = line.trim()).isEmpty()) {
+                            files.add(line.trim());
+                        }
+                    }
+                };
+                rootShell.add(command);
+                command.waitFor();
+            }
+        } else {
+            Logger.w(TAG, "could not list files");
+        }
+        return files;
+    }
+
     public static int readSysfsIntValue(final String path) {
         final String rawString = IoUtils.readFile(path);
         if (!TextUtils.isEmpty(rawString)) {
@@ -110,8 +175,7 @@ public class IoUtils {
         return ((content != null) ? content.trim() : null);
     }
 
-    @Nullable public static Command readFileRoot(@NonNull final Context context, @Nullable final String path,
-            @Nullable final ReadFileListener readFileListener) {
+    @Nullable public static Command readFileRoot(@Nullable final String path, @Nullable final ReadFileListener readFileListener) {
         if (TextUtils.isEmpty(path) || readFileListener == null || !Device.isRooted()) {
             return null;
         }
@@ -135,7 +199,7 @@ public class IoUtils {
             }
         };
 
-        final RootShell rootShell = ShellManager.get(context).getRootShell();
+        final RootShell rootShell = ShellManager.get().getRootShell();
         if (rootShell != null) {
             rootShell.add(cmd);
             return cmd;
@@ -175,25 +239,23 @@ public class IoUtils {
         return null;
     }
 
-    public static boolean writeToFile(@NonNull Context context, @NonNull String path, @NonNull String content) {
-        return writeToFile(context, path, content, true);
+    public static boolean writeToFile(@NonNull String path, @NonNull String content) {
+        return writeToFile(path, content, true);
     }
 
-    public static boolean writeToFile(@NonNull Context context, @NonNull String path, @NonNull String content,
-            boolean useRootAsFallback) {
-        return writeToFile(context, new File(path), content, useRootAsFallback);
+    public static boolean writeToFile(@NonNull String path, @NonNull String content, boolean useRootAsFallback) {
+        return writeToFile(new File(path), content, useRootAsFallback);
     }
 
-    public static boolean writeToFile(@NonNull Context context, @NonNull File file, @NonNull String content) {
-        return writeToFile(context, file, content, true);
+    public static boolean writeToFile(@NonNull File file, @NonNull String content) {
+        return writeToFile(file, content, true);
     }
 
-    public static boolean writeToFile(@NonNull Context context, @NonNull File file, @NonNull String content,
-            boolean useRootAsFallback) {
+    public static boolean writeToFile(@NonNull File file, @NonNull String content, boolean useRootAsFallback) {
         final boolean useRoot = useRootAsFallback && (!file.canWrite() && Device.isRooted());
         if (useRoot) {
             Logger.v(TAG, "writing to %s as root", file.getAbsolutePath());
-            final RootShell rootShell = ShellManager.get(context).getRootShell();
+            final RootShell rootShell = ShellManager.get().getRootShell();
             if (rootShell == null) {
                 Logger.w(TAG, "could not obtain root shell!");
                 return false;

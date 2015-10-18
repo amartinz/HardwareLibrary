@@ -127,7 +127,7 @@ public class GpuReader {
 
             while (!hasFinished) {
                 if (gpuInformation.freqCur == Constants.NOT_INITIALIZED) {
-                    Command cmd = IoUtils.readFileRoot(context, getFreqCurPath(context), readFileListener);
+                    Command cmd = IoUtils.readFileRoot(getFreqCurPath(context), readFileListener);
                     if (cmd == null) {
                         Logger.e(this, "Could not read file with root!");
                         break;
@@ -137,7 +137,7 @@ public class GpuReader {
                 }
                 if ((gpuInformation.freqMax == Constants.NOT_INITIALIZED) ||
                     (gpuInformation.freqMin == Constants.NOT_INITIALIZED)) {
-                    Command cmd = IoUtils.readFileRoot(context, getFreqAvailPath(context), readFileListener);
+                    Command cmd = IoUtils.readFileRoot(getFreqAvailPath(context), readFileListener);
                     if (cmd == null) {
                         Logger.e(this, "Could not read file with root!");
                         break;

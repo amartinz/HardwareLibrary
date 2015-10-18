@@ -89,7 +89,7 @@ public class ProcessorInfo {
             return;
         }
 
-        final Command cmd = IoUtils.readFileRoot(context, PATH_PROC_CPU, new IoUtils.ReadFileListener() {
+        final Command cmd = IoUtils.readFileRoot(PATH_PROC_CPU, new IoUtils.ReadFileListener() {
             @Override public void onFileRead(String path, String content) {
                 feedWithInformation(content, procInfoListener);
             }

@@ -195,7 +195,7 @@ public class CpuReader {
 
             while (!hasFinished) {
                 if (cpuInformation.coreCount == Constants.NOT_INITIALIZED) {
-                    Command cmd = IoUtils.readFileRoot(context, T_PATH_COUNT, readFileListener);
+                    Command cmd = IoUtils.readFileRoot(T_PATH_COUNT, readFileListener);
                     if (cmd == null) {
                         Logger.e(this, "Could not read file with root!");
                         break;
@@ -204,7 +204,7 @@ public class CpuReader {
                     }
                 }
                 if (cpuInformation.freqAvail == null) {
-                    Command cmd = IoUtils.readFileRoot(context, T_PATH_COUNT, readFileListener);
+                    Command cmd = IoUtils.readFileRoot(T_PATH_COUNT, readFileListener);
                     if (cmd == null) {
                         Logger.e(this, "Could not read file with root!");
                         break;
@@ -213,7 +213,7 @@ public class CpuReader {
                     }
                 }
                 if (cpuInformation.freqCur == Constants.NOT_INITIALIZED) {
-                    Command cmd = IoUtils.readFileRoot(context, T_PATH_FREQ_CUR, readFileListener);
+                    Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_CUR, readFileListener);
                     if (cmd == null) {
                         Logger.e(this, "Could not read file with root!");
                         break;
@@ -222,7 +222,7 @@ public class CpuReader {
                     }
                 }
                 if (cpuInformation.freqMax == Constants.NOT_INITIALIZED) {
-                    Command cmd = IoUtils.readFileRoot(context, T_PATH_FREQ_MAX, readFileListener);
+                    Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_MAX, readFileListener);
                     if (cmd == null) {
                         Logger.e(this, "Could not read file with root!");
                         break;
@@ -231,7 +231,7 @@ public class CpuReader {
                     }
                 }
                 if (cpuInformation.freqMin == Constants.NOT_INITIALIZED) {
-                    Command cmd = IoUtils.readFileRoot(context, T_PATH_FREQ_MIN, readFileListener);
+                    Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_MIN, readFileListener);
                     if (cmd == null) {
                         Logger.e(this, "Could not read file with root!");
                         break;
@@ -240,8 +240,7 @@ public class CpuReader {
                     }
                 }
                 if (cpuInformation.temperature == Constants.NOT_INITIALIZED) {
-                    Command cmd =
-                            IoUtils.readFileRoot(context, T_PATH_TEMPERATURE, readFileListener);
+                    Command cmd = IoUtils.readFileRoot(T_PATH_TEMPERATURE, readFileListener);
                     if (cmd == null) {
                         Logger.e(this, "Could not read file with root!");
                         break;
