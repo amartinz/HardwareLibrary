@@ -165,6 +165,14 @@ public class IoUtils {
         return Constants.INVALID;
     }
 
+    @Nullable public static String[] readStringArray(final String path) {
+        final String line = readOneLine(path);
+        if (line != null) {
+            return line.split(" ");
+        }
+        return null;
+    }
+
     @Nullable public static String readFile(final String path) {
         final String content = readFileInternal(path, false);
         return ((content != null) ? content.trim() : null);
