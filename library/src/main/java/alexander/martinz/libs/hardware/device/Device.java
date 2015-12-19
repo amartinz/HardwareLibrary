@@ -59,7 +59,7 @@ public class Device {
     @SerializedName("selinux_enforcing") public boolean isSELinuxEnforcing;
 
     private static Device sInstance;
-    private Context mContext;
+    protected Context mContext;
 
     public interface EmmcInfoListener {
         void onEmmcInfoAvailable(@NonNull EmmcInfo emmcInfo);
