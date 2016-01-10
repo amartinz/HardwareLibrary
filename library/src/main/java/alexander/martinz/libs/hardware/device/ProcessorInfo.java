@@ -85,7 +85,7 @@ public class ProcessorInfo {
         }
 
         // If we could not read the file and we do not have root, then we can not read it...
-        if (!Device.isRooted()) {
+        if (!RootCheck.isRooted()) {
             return;
         }
 

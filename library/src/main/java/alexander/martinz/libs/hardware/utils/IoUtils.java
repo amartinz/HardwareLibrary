@@ -39,6 +39,7 @@ import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.execution.ShellManager;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.device.Device;
+import alexander.martinz.libs.hardware.device.RootCheck;
 import alexander.martinz.libs.logger.Logger;
 import hugo.weaving.DebugLog;
 
@@ -184,7 +185,7 @@ public class IoUtils {
     }
 
     @Nullable public static Command readFileRoot(@Nullable final String path, @Nullable final ReadFileListener readFileListener) {
-        if (TextUtils.isEmpty(path) || readFileListener == null || !Device.isRooted()) {
+        if (TextUtils.isEmpty(path) || readFileListener == null || !RootCheck.isRooted()) {
             return null;
         }
 
@@ -260,7 +261,7 @@ public class IoUtils {
     }
 
     public static boolean writeToFile(@NonNull File file, @NonNull String content, boolean useRootAsFallback) {
-        final boolean useRoot = useRootAsFallback && (!file.canWrite() && Device.isRooted());
+        final boolean useRoot = useRootAsFallback && (!file.canWrite() && RootCheck.isRooted());
         if (useRoot) {
             Logger.v(TAG, "writing to %s as root", file.getAbsolutePath());
             final RootShell rootShell = ShellManager.get().getRootShell();

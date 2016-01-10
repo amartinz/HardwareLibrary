@@ -29,6 +29,7 @@ import java.util.List;
 import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.device.Device;
+import alexander.martinz.libs.hardware.device.RootCheck;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
 import alexander.martinz.libs.logger.Logger;
@@ -188,7 +189,7 @@ public class CpuReader {
         @Override public void run() {
             cpuInformation = getCpuInformationBlocking();
             // if the cpu information contains an invalid value AND we are not using root, finish
-            if (cpuInformation.isValid() || !Device.isRooted()) {
+            if (cpuInformation.isValid() || !RootCheck.isRooted()) {
                 hasFinished = true;
             } else {
                 cpuInformation.resetInvalid();

@@ -25,18 +25,11 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.File;
-
-import alexander.martinz.libs.execution.RootShell;
-import alexander.martinz.libs.execution.ShellManager;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
-import alexander.martinz.libs.logger.Logger;
 
 public class Device {
-    private static final String TAG = Device.class.getSimpleName();
-
     @SerializedName("platform_version") public final String platformVersion;
     @SerializedName("platform_id") public final String platformId;
     @SerializedName("platform_type") public final String platformType;
@@ -121,28 +114,8 @@ public class Device {
         return sInstance;
     }
 
-    public static boolean isRooted() {
-        final boolean binaryExists = new File("/system/bin/su").exists()
-                                     || new File("/system/xbin/su").exists()
-                                     || new File("/system/bin/.ext/.su").exists()
-                                     || new File("/system/xbin/sugote").exists()
-                                     // "system less" root (supersu)
-                                     || new File("/su/bin/su").exists();
-
-        if (binaryExists) {
-            return true;
-        }
-        Logger.d(TAG, "no binary found, trying with hit and miss");
-
-        // fire and forget id, just for fun
-        RootShell.fireAndForget("id");
-
-        final RootShell rootShell = ShellManager.get().getRootShell();
-        return (rootShell != null);
-    }
-
     public Device update() {
-        hasRoot = isRooted();
+        hasRoot = RootCheck.isRooted();
 
         // get su version
         //suVersion = hasRoot ? Utils.getCommandResult("su -v", "-") : "-";
