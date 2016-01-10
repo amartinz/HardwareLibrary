@@ -29,8 +29,5 @@ public class Constants {
     public static final String UNAVAILABLE = "Unavailable";
     public static final String UNKNOWN = "Unknown";
 
-    // change this to false or remove the "isRooted" check to force
-    public static boolean USE_ROOT = Device.isRooted();
-
     public static final String[] ENABLED_STATES = { "Y", "TRUE", "1", "255" };
 }

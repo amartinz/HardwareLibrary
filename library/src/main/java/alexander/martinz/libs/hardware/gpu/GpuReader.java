@@ -29,6 +29,7 @@ import java.util.Collections;
 import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.R;
+import alexander.martinz.libs.hardware.device.Device;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
 import alexander.martinz.libs.logger.Logger;
@@ -119,7 +120,7 @@ public class GpuReader {
         @Override public void run() {
             gpuInformation = getGpuInformationBlocking(context);
             // if the gpu information contains an invalid value AND we are not using root, finish
-            if (gpuInformation.isValid() || !Constants.USE_ROOT) {
+            if (gpuInformation.isValid() || !Device.isRooted()) {
                 hasFinished = true;
             } else {
                 gpuInformation.resetInvalid();
