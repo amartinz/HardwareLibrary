@@ -21,6 +21,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class IoScheduler {
      *
      * @return available schedulers
      */
-    @Nullable public static String[] getAvailableIoSchedulers() {
+    @WorkerThread @Nullable public static String[] getAvailableIoSchedulers() {
         String[] schedulers = null;
         final String[] aux = IoUtils.readStringArray(IO_SCHEDULER_PATH[0]);
         if (aux != null) {
@@ -74,6 +75,14 @@ public class IoScheduler {
             }
         }
         return schedulers;
+    }
+
+    @WorkerThread @Nullable public static IoScheduler getIoSchedulerBlocking() {
+        final String content = RootShell.fireAndBlockString(String.format("cat %s", IO_SCHEDULER_PATH[0]));
+        if (TextUtils.isEmpty(content)) {
+            return null;
+        }
+        return processIoSchedulerContent(content, null, null);
     }
 
     public static void getIoScheduler(final IoSchedulerListener listener) {
@@ -105,13 +114,14 @@ public class IoScheduler {
         }
     }
 
-    private static void processIoSchedulerContent(@NonNull String content, final IoSchedulerListener listener, Handler handler) {
+    @Nullable private static IoScheduler processIoSchedulerContent(@NonNull String content,
+            @Nullable final IoSchedulerListener listener, @Nullable Handler handler) {
         final List<String> result = Arrays.asList(content.split(" "));
         final List<String> tmpList = new ArrayList<>();
         String tmpString = "";
 
         if (result.size() <= 0) {
-            return;
+            return null;
         }
 
         for (final String s : result) {
@@ -126,12 +136,14 @@ public class IoScheduler {
             }
         }
 
-        final String scheduler = tmpString;
-        final String[] availableSchedulers = tmpList.toArray(new String[tmpList.size()]);
-        handler.post(new Runnable() {
-            @Override public void run() {
-                listener.onIoScheduler(new IoScheduler(availableSchedulers, scheduler));
-            }
-        });
+        final IoScheduler ioScheduler = new IoScheduler(tmpList.toArray(new String[tmpList.size()]), tmpString);
+        if (handler != null && listener != null) {
+            handler.post(new Runnable() {
+                @Override public void run() {
+                    listener.onIoScheduler(ioScheduler);
+                }
+            });
+        }
+        return ioScheduler;
     }
 }

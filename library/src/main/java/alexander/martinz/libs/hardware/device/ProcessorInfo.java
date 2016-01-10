@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -69,15 +70,15 @@ public class ProcessorInfo {
         return new Gson().toJson(this, ProcessorInfo.class);
     }
 
-    public static void feedWithInformation(final Context context, final Device.ProcessorInfoListener processorInfoListener) {
+    public static void feedWithInformation(final Device.ProcessorInfoListener processorInfoListener) {
         AsyncTask.execute(new Runnable() {
             @Override public void run() {
-                feedWithInformationBlocking(context, processorInfoListener);
+                feedWithInformationBlocking(processorInfoListener);
             }
         });
     }
 
-    public static void feedWithInformationBlocking(final Context context, final Device.ProcessorInfoListener procInfoListener) {
+    @WorkerThread public static void feedWithInformationBlocking(final Device.ProcessorInfoListener procInfoListener) {
         final String content = IoUtils.readFile(PATH_PROC_CPU);
         if (!TextUtils.isEmpty(content)) {
             feedWithInformation(content, procInfoListener);

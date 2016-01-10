@@ -17,8 +17,8 @@
 
 package alexander.martinz.libs.hardware.device;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -60,15 +60,15 @@ public class EmmcInfo {
         rev = ((cid != null && cid.length() > 20) ? cid.substring(18, 20) : "-");
     }
 
-    public static void feedWithInformation(final Context context, final Device.EmmcInfoListener emmcInfoListener) {
+    public static void feedWithInformation(final Device.EmmcInfoListener emmcInfoListener) {
         AsyncTask.execute(new Runnable() {
             @Override public void run() {
-                feedWithInformationBlocking(context, emmcInfoListener);
+                feedWithInformationBlocking(emmcInfoListener);
             }
         });
     }
 
-    public static void feedWithInformationBlocking(final Context context, final Device.EmmcInfoListener emmcInfoListener) {
+    @WorkerThread public static void feedWithInformationBlocking(final Device.EmmcInfoListener emmcInfoListener) {
         if (emmcInfoListener != null) {
             emmcInfoListener.onEmmcInfoAvailable(new EmmcInfo());
         }

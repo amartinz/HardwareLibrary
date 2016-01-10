@@ -21,6 +21,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -35,8 +36,6 @@ import alexander.martinz.libs.hardware.utils.Utils;
 import alexander.martinz.libs.logger.Logger;
 
 public class GpuReader {
-    private static final String TAG = GpuReader.class.getSimpleName();
-
     private static String basePath;
     private static String freqAvailPath;
     private static String freqCurPath;
@@ -47,7 +46,7 @@ public class GpuReader {
         AsyncTask.execute(new ReadGpuInformationRunnable(context, listener));
     }
 
-    public static GpuInformation getGpuInformationBlocking(Context context) {
+    @WorkerThread public static GpuInformation getGpuInformationBlocking(Context context) {
         final GpuInformation gpuInformation = new GpuInformation();
 
         gpuInformation.freqAvailable = readAvailableFrequencies(context);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.WorkerThread;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ProcessManager {
         }
     }
 
-    public static List<Process> getRunningProcesses(Context context) {
+    @WorkerThread public static List<Process> getRunningProcesses(Context context) {
         final List<Process> processes = new ArrayList<>();
 
         final NormalShell normalShell = ShellManager.get(context).getNormalShell();
@@ -46,7 +47,7 @@ public class ProcessManager {
         return processes;
     }
 
-    public static List<Process> getRunningApps(Context context) {
+    @WorkerThread public static List<Process> getRunningApps(Context context) {
         final List<Process> processes = new ArrayList<>();
 
         final NormalShell normalShell = ShellManager.get(context).getNormalShell();

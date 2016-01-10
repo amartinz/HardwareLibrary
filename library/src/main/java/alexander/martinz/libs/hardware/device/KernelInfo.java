@@ -17,8 +17,8 @@
 
 package alexander.martinz.libs.hardware.device;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -51,15 +51,15 @@ public class KernelInfo {
         return new Gson().toJson(this, KernelInfo.class);
     }
 
-    public static void feedWithInformation(final Context context, final Device.KernelInfoListener kernelInfoListener) {
+    public static void feedWithInformation(final Device.KernelInfoListener kernelInfoListener) {
         AsyncTask.execute(new Runnable() {
             @Override public void run() {
-                feedWithInformationBlocking(context, kernelInfoListener);
+                feedWithInformationBlocking(kernelInfoListener);
             }
         });
     }
 
-    public static void feedWithInformationBlocking(final Context context, final Device.KernelInfoListener kernelInfoListener) {
+    @WorkerThread public static void feedWithInformationBlocking(final Device.KernelInfoListener kernelInfoListener) {
         final String content = IoUtils.readFile(PATH_PROC_VERSION);
         if (!TextUtils.isEmpty(content)) {
             feedWithInformation(content, kernelInfoListener);

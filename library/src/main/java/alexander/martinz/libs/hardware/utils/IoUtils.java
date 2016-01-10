@@ -21,6 +21,7 @@ import android.content.Context;
 import android.support.annotation.ArrayRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import java.io.BufferedReader;
@@ -129,7 +130,7 @@ public class IoUtils {
         return listFiles(directory, false);
     }
 
-    @DebugLog @NonNull public static List<String> listFiles(@NonNull File directory, boolean withRootFallback) {
+    @WorkerThread @DebugLog @NonNull public static List<String> listFiles(@NonNull File directory, boolean withRootFallback) {
         final ArrayList<String> files = new ArrayList<>();
         final File[] listedFiles = directory.listFiles();
         if (listedFiles != null) {
@@ -158,7 +159,7 @@ public class IoUtils {
         return files;
     }
 
-    public static int readSysfsIntValue(final String path) {
+    @WorkerThread public static int readSysfsIntValue(final String path) {
         final String rawString = IoUtils.readFile(path);
         if (!TextUtils.isEmpty(rawString)) {
             return Utils.tryParseInt(rawString);
@@ -166,7 +167,7 @@ public class IoUtils {
         return Constants.INVALID;
     }
 
-    @Nullable public static String[] readStringArray(final String path) {
+    @WorkerThread @Nullable public static String[] readStringArray(final String path) {
         final String line = readOneLine(path);
         if (line != null) {
             return line.split(" ");
@@ -174,16 +175,17 @@ public class IoUtils {
         return null;
     }
 
-    @Nullable public static String readFile(final String path) {
+    @WorkerThread @Nullable public static String readFile(final String path) {
         final String content = readFileInternal(path, false);
         return ((content != null) ? content.trim() : null);
     }
 
-    @Nullable public static String readOneLine(final String path) {
+    @WorkerThread @Nullable public static String readOneLine(final String path) {
         final String content = readFileInternal(path, true);
         return ((content != null) ? content.trim() : null);
     }
 
+    @WorkerThread
     @Nullable public static Command readFileRoot(@Nullable final String path, @Nullable final ReadFileListener readFileListener) {
         if (TextUtils.isEmpty(path) || readFileListener == null || !RootCheck.isRooted()) {
             return null;
@@ -216,7 +218,7 @@ public class IoUtils {
         return null;
     }
 
-    @Nullable private static String readFileInternal(final String path, final boolean oneLine) {
+    @WorkerThread @Nullable private static String readFileInternal(final String path, final boolean oneLine) {
         final File f = new File(path);
         if (f.canRead()) {
             FileReader fileReader = null;
@@ -248,19 +250,19 @@ public class IoUtils {
         return null;
     }
 
-    public static boolean writeToFile(@NonNull String path, @NonNull String content) {
+    @WorkerThread public static boolean writeToFile(@NonNull String path, @NonNull String content) {
         return writeToFile(path, content, true);
     }
 
-    public static boolean writeToFile(@NonNull String path, @NonNull String content, boolean useRootAsFallback) {
+    @WorkerThread public static boolean writeToFile(@NonNull String path, @NonNull String content, boolean useRootAsFallback) {
         return writeToFile(new File(path), content, useRootAsFallback);
     }
 
-    public static boolean writeToFile(@NonNull File file, @NonNull String content) {
+    @WorkerThread public static boolean writeToFile(@NonNull File file, @NonNull String content) {
         return writeToFile(file, content, true);
     }
 
-    public static boolean writeToFile(@NonNull File file, @NonNull String content, boolean useRootAsFallback) {
+    @WorkerThread public static boolean writeToFile(@NonNull File file, @NonNull String content, boolean useRootAsFallback) {
         final boolean useRoot = useRootAsFallback && (!file.canWrite() && RootCheck.isRooted());
         if (useRoot) {
             Logger.v(TAG, "writing to %s as root", file.getAbsolutePath());

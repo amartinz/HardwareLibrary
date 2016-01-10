@@ -20,6 +20,7 @@ package alexander.martinz.libs.hardware.cpu;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -28,7 +29,6 @@ import java.util.List;
 
 import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.device.Device;
 import alexander.martinz.libs.hardware.device.RootCheck;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
@@ -58,7 +58,7 @@ public class CpuReader {
         AsyncTask.execute(new ReadCpuInformationRunnable(context, listener));
     }
 
-    public static CpuInformation getCpuInformationBlocking() {
+    @WorkerThread public static CpuInformation getCpuInformationBlocking() {
         final CpuInformation cpuInformation = new CpuInformation();
 
         cpuInformation.coreCount = readAvailableCores();
