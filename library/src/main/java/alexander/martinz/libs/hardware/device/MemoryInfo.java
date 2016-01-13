@@ -21,8 +21,6 @@ import android.os.AsyncTask;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
@@ -45,10 +43,6 @@ public class MemoryInfo {
     public long free; // TODO: rework as android calculates free memory differently
 
     public MemoryInfo() { }
-
-    @Override public String toString() {
-        return new Gson().toJson(this, MemoryInfo.class);
-    }
 
     public static void feedWithInformation(final int type, final Device.MemoryInfoListener listener) {
         AsyncTask.execute(new Runnable() {

@@ -17,14 +17,11 @@
 
 package alexander.martinz.libs.hardware.device;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
-
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,10 +61,6 @@ public class ProcessorInfo {
             is64Bit = false;
             supportedAbis = String.format("%s, %s", Build.CPU_ABI, Build.CPU_ABI2);
         }
-    }
-
-    @Override public String toString() {
-        return new Gson().toJson(this, ProcessorInfo.class);
     }
 
     public static void feedWithInformation(final Device.ProcessorInfoListener processorInfoListener) {

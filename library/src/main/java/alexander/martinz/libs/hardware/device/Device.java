@@ -22,39 +22,36 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
-
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
 
 public class Device {
-    @SerializedName("platform_version") public final String platformVersion;
-    @SerializedName("platform_id") public final String platformId;
-    @SerializedName("platform_type") public final String platformType;
-    @SerializedName("platform_tags") public final String platformTags;
-    @SerializedName("platform_build_date") public final String platformBuildType;
+    public final String platformVersion;
+    public final String platformId;
+    public final String platformType;
+    public final String platformTags;
+    public final String platformBuildType;
 
-    @SerializedName("vm_library") public final String vmLibrary;
-    @SerializedName("vm_version") public final String vmVersion;
+    public final String vmLibrary;
+    public final String vmVersion;
 
-    @SerializedName("screen_width") public final int screenWidth;
-    @SerializedName("screen_height") public final int screenHeight;
+    public final int screenWidth;
+    public final int screenHeight;
 
-    @SerializedName("android_id") public final String androidId;
-    @SerializedName("manufacturer") public final String manufacturer;
-    @SerializedName("model") public final String model;
-    @SerializedName("device") public final String device;
-    @SerializedName("product") public final String product;
-    @SerializedName("board") public final String board;
-    @SerializedName("bootloader") public final String bootloader;
-    @SerializedName("radio_version") public final String radio;
+    public final String androidId;
+    public final String manufacturer;
+    public final String model;
+    public final String device;
+    public final String product;
+    public final String board;
+    public final String bootloader;
+    public final String radio;
 
-    @SerializedName("has_busybox") public boolean hasBusyBox;
-    @SerializedName("has_root") public boolean hasRoot;
-    @SerializedName("su_version") public String suVersion;
-    @SerializedName("selinux_enforcing") public boolean isSELinuxEnforcing;
+    public boolean hasBusyBox;
+    public boolean hasRoot;
+    public String suVersion;
+    public boolean isSELinuxEnforcing;
 
     private static Device sInstance;
     protected Context mContext;
@@ -170,10 +167,6 @@ public class Device {
         }
 
         return isSELinuxEnforcing;
-    }
-
-    @Override public String toString() {
-        return new Gson().toJson(this, Device.class);
     }
 
     public static String getAndroidId(@NonNull Context context) {

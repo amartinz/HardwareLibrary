@@ -21,8 +21,6 @@ import android.os.AsyncTask;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,10 +44,6 @@ public class KernelInfo {
     public String date;
 
     private KernelInfo() { }
-
-    @Override public String toString() {
-        return new Gson().toJson(this, KernelInfo.class);
-    }
 
     public static void feedWithInformation(final Device.KernelInfoListener kernelInfoListener) {
         AsyncTask.execute(new Runnable() {
