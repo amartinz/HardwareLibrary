@@ -17,9 +17,9 @@
 
 package alexander.martinz.libs.hardware;
 
-import alexander.martinz.libs.hardware.device.Device;
-
 public class Constants {
+    public static boolean DEBUG;
+
     public static final int API_NOT_SUPPORTED = -100;
 
     public static final int NOT_INITIALIZED = -3;

@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,9 +34,10 @@ import alexander.martinz.libs.hardware.R;
 import alexander.martinz.libs.hardware.device.RootCheck;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
-import alexander.martinz.libs.logger.Logger;
 
 public class GpuReader {
+    private static final String TAG = GpuReader.class.getSimpleName();
+
     private static String basePath;
     private static String freqAvailPath;
     private static String freqCurPath;
@@ -129,7 +131,9 @@ public class GpuReader {
                 if (gpuInformation.freqCur == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(getFreqCurPath(context), readFileListener);
                     if (cmd == null) {
-                        Logger.e(this, "Could not read file with root!");
+                        if (Constants.DEBUG) {
+                            Log.e(TAG, "Could not read file with root!");
+                        }
                         break;
                     } else {
                         gpuInformation.freqCur = Constants.INITIALIZATION_STARTED;
@@ -139,7 +143,9 @@ public class GpuReader {
                     (gpuInformation.freqMin == Constants.NOT_INITIALIZED)) {
                     Command cmd = IoUtils.readFileRoot(getFreqAvailPath(context), readFileListener);
                     if (cmd == null) {
-                        Logger.e(this, "Could not read file with root!");
+                        if (Constants.DEBUG) {
+                            Log.e(TAG, "Could not read file with root!");
+                        }
                         break;
                     } else {
                         gpuInformation.freqMin = Constants.INITIALIZATION_STARTED;

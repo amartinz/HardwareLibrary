@@ -18,12 +18,13 @@ package alexander.martinz.libs.hardware.device;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 
 import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.execution.ShellManager;
-import alexander.martinz.libs.logger.Logger;
+import alexander.martinz.libs.hardware.Constants;
 
 public class RootCheck {
     private static final String TAG = Device.class.getSimpleName();
@@ -56,18 +57,24 @@ public class RootCheck {
 
         final String suPath = getSuPath();
         if (!TextUtils.isEmpty(suPath)) {
-            Logger.d(TAG, "Found su path: %s", suPath);
+            if (Constants.DEBUG) {
+                Log.d(TAG, String.format("Found su path: %s", suPath));
+            }
             sIsRooted = true;
             return true;
         }
-        Logger.d(TAG, "no binary found, trying with hit and miss");
+        if (Constants.DEBUG) {
+            Log.d(TAG, "no binary found, trying with hit and miss");
+        }
 
         // fire and forget id, just for fun
         RootShell.fireAndForget("id");
 
         final RootShell rootShell = ShellManager.get().getRootShell();
         sIsRooted = (rootShell != null);
-        Logger.d(TAG, "is rooted: %s", sIsRooted);
+        if (Constants.DEBUG) {
+            Log.d(TAG, String.format("is rooted: %s", sIsRooted));
+        }
         return sIsRooted;
     }
 

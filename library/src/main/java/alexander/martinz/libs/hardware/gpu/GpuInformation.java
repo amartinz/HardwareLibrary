@@ -19,6 +19,7 @@ package alexander.martinz.libs.hardware.gpu;
 
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -26,7 +27,6 @@ import java.util.List;
 
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.Utils;
-import alexander.martinz.libs.logger.Logger;
 
 public class GpuInformation {
     private static final String TAG = GpuInformation.class.getSimpleName();
@@ -90,7 +90,9 @@ public class GpuInformation {
             try {
                 value = Utils.tryParseInt(mhzString) / 1000000;
             } catch (NumberFormatException exc) {
-                Logger.e(TAG, "toMhz", exc);
+                if (Constants.DEBUG) {
+                    Log.e(TAG, "toMhz", exc);
+                }
                 value = Constants.INVALID;
             }
         }

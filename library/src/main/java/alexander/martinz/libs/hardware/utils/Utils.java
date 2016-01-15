@@ -20,6 +20,7 @@ package alexander.martinz.libs.hardware.utils;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,7 +29,6 @@ import java.util.List;
 import java.util.Locale;
 
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.logger.Logger;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
@@ -53,7 +53,9 @@ public class Utils {
         try {
             return Integer.parseInt(toParse);
         } catch (NumberFormatException nfe) {
-            Logger.e(TAG, "Could not parse as Integer", nfe);
+            if (Constants.DEBUG) {
+                Log.e(TAG, "Could not parse as Integer", nfe);
+            }
         }
         return null;
     }
@@ -76,7 +78,9 @@ public class Utils {
         try {
             return Long.parseLong(toParse);
         } catch (NumberFormatException nfe) {
-            Logger.e(TAG, "Could not parse as Long", nfe);
+            if (Constants.DEBUG) {
+                Log.e(TAG, "Could not parse as Long", nfe);
+            }
         }
         return null;
     }

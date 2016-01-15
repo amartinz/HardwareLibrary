@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -39,9 +40,7 @@ import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.execution.ShellManager;
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.device.Device;
 import alexander.martinz.libs.hardware.device.RootCheck;
-import alexander.martinz.libs.logger.Logger;
 import hugo.weaving.DebugLog;
 
 public class IoUtils {
@@ -140,7 +139,9 @@ public class IoUtils {
         } else if (withRootFallback) {
             final RootShell rootShell = ShellManager.get().getRootShell();
             if (rootShell == null) {
-                Logger.w(TAG, "could not obtain root shell");
+                if (Constants.DEBUG) {
+                    Log.w(TAG, "could not obtain root shell");
+                }
             } else {
                 final Command command = new Command(String.format("ls %s", directory.getAbsolutePath())) {
                     @Override public void onCommandOutput(int id, String line) {
@@ -153,8 +154,8 @@ public class IoUtils {
                 rootShell.add(command);
                 command.waitFor();
             }
-        } else {
-            Logger.w(TAG, "could not list files");
+        } else if (Constants.DEBUG) {
+            Log.w(TAG, "could not list files");
         }
         return files;
     }
@@ -199,11 +200,6 @@ public class IoUtils {
                 super.onCommandCompleted(id, exitCode);
             }
 
-            @Override public void onCommandTerminated(int id, String reason) {
-                Logger.e(this, "File reading terminated -> %s", reason);
-                super.onCommandTerminated(id, reason);
-            }
-
             @Override public void onCommandOutput(int id, String line) {
                 sb.append(line).append('\n');
                 super.onCommandOutput(id, line);
@@ -236,16 +232,15 @@ public class IoUtils {
                 }
                 return stringBuilder.toString();
             } catch (IOException ioe) {
-                Logger.e(TAG, "Could not read file -> %s", path);
-                if (Logger.getEnabled()) {
-                    ioe.printStackTrace();
+                if (Constants.DEBUG) {
+                    Log.e(TAG, String.format("Could not read file -> %s", path), ioe);
                 }
             } finally {
                 closeQuietly(bufferedReader);
                 closeQuietly(fileReader);
             }
-        } else {
-            Logger.w(TAG, "Can not read file -> %s", path);
+        } else if (Constants.DEBUG) {
+            Log.w(TAG, String.format("Can not read file, because it is not readable -> %s", path));
         }
         return null;
     }
@@ -265,10 +260,14 @@ public class IoUtils {
     @WorkerThread public static boolean writeToFile(@NonNull File file, @NonNull String content, boolean useRootAsFallback) {
         final boolean useRoot = useRootAsFallback && (!file.canWrite() && RootCheck.isRooted());
         if (useRoot) {
-            Logger.v(TAG, "writing to %s as root", file.getAbsolutePath());
+            if (Constants.DEBUG) {
+                Log.v(TAG, String.format("writing to %s as root", file.getAbsolutePath()));
+            }
             final RootShell rootShell = ShellManager.get().getRootShell();
             if (rootShell == null) {
-                Logger.w(TAG, "could not obtain root shell!");
+                if (Constants.DEBUG) {
+                    Log.w(TAG, "could not obtain root shell!");
+                }
                 return false;
             }
 
@@ -278,19 +277,23 @@ public class IoUtils {
             rootShell.add(writeCommand);
 
             final int exitCode = writeCommand.waitFor().getExitCode();
-            Logger.v(TAG, "write command \"%s\" ended with exit code -> %s", id, exitCode);
+            if (Constants.DEBUG) {
+                Log.v(TAG, String.format("write command \"%s\" ended with exit code -> %s", id, exitCode));
+            }
             return (exitCode == 0);
         } else {
-            Logger.v(TAG, "writing to %s", file.getAbsolutePath());
+            if (Constants.DEBUG) {
+                Log.v(TAG, String.format("writing to %s", file.getAbsolutePath()));
+            }
             FileWriter fw = null;
             try {
                 fw = new FileWriter(file);
                 fw.write(content);
             } catch (IOException ioe) {
-                Logger.e(TAG, "could not write to file %s", file.getAbsolutePath());
-                if (Logger.getEnabled()) {
-                    Logger.e(TAG, "exists: %s | can read: %s | can write: %s", file.exists(), file.canRead(), file.canWrite());
-                    Logger.e(TAG, "Reason", ioe);
+                if (Constants.DEBUG) {
+                    Log.e(TAG, String.format("could not write to file %s", file.getAbsolutePath()));
+                    Log.e(TAG, String.format("exists: %s | can read: %s | can write: %s",
+                            file.exists(), file.canRead(), file.canWrite()), ioe);
                 }
                 return false;
             } finally {

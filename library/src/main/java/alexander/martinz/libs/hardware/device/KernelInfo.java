@@ -20,13 +20,14 @@ package alexander.martinz.libs.hardware.device;
 import android.os.AsyncTask;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import alexander.martinz.libs.execution.Command;
+import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
-import alexander.martinz.libs.logger.Logger;
 
 /**
  * A class which parses /proc/version and prepares information ready for usage
@@ -71,7 +72,9 @@ public class KernelInfo {
             }
         });
         if (cmd == null) {
-            Logger.e(TAG, "Could not read file with root!");
+            if (Constants.DEBUG) {
+                Log.e(TAG, "Could not read file with root!");
+            }
         }
     }
 
@@ -98,7 +101,9 @@ public class KernelInfo {
 
         final Matcher m = Pattern.compile(PROC_VERSION_REGEX).matcher(content);
         if (!m.matches() || m.groupCount() < 6) {
-            Logger.e(TAG, "Regex does not match!");
+            if (Constants.DEBUG) {
+                Log.e(TAG, "Regex does not match!");
+            }
             return;
         }
 

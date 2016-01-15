@@ -25,6 +25,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -32,8 +33,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.R;
-import alexander.martinz.libs.logger.Logger;
 
 public abstract class BaseSensor extends FrameLayout implements SensorEventListener {
     private SensorManager mSensorManager;
@@ -152,7 +153,10 @@ public abstract class BaseSensor extends FrameLayout implements SensorEventListe
     }
 
     @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        Logger.d(this, "onAccuracyChanged: %s (%s), %s", sensor.getName(), sensor.getVendor(), accuracy);
+        if (Constants.DEBUG) {
+            Log.d(this.getClass().getSimpleName(),
+                    String.format("onAccuracyChanged: %s (%s), %s", sensor.getName(), sensor.getVendor(), accuracy));
+        }
     }
 
 }

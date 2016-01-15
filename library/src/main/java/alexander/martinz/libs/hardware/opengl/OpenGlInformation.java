@@ -27,11 +27,12 @@ import android.opengl.EGLDisplay;
 import android.opengl.EGLSurface;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 
+import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.R;
-import alexander.martinz.libs.logger.Logger;
 
 import static android.opengl.GLES20.GL_EXTENSIONS;
 import static android.opengl.GLES20.GL_RENDERER;
@@ -70,7 +71,9 @@ public class OpenGlInformation {
             return false;
         }
         final int glEsVersion = ((info.reqGlEsVersion & 0xffff0000) >> 16);
-        Logger.v(TAG, "glEsVersion: %s (%s)", glEsVersion, info.getGlEsVersion());
+        if (Constants.DEBUG) {
+            Log.v(TAG, String.format("glEsVersion: %s (%s)", glEsVersion, info.getGlEsVersion()));
+        }
         return (glEsVersion >= 2);
     }
 
@@ -94,7 +97,9 @@ public class OpenGlInformation {
             final int[] numConfig = new int[1];
             EGL14.eglChooseConfig(dpy, configAttr, 0, configs, 0, 1, numConfig, 0);
             if (numConfig[0] == 0) {
-                Logger.w("getOpenGLESInformation", "no config found! PANIC!");
+                if (Constants.DEBUG) {
+                    Log.w("getOpenGLESInformation", "no config found! PANIC!");
+                }
             }
             final EGLConfig config = configs[0];
 

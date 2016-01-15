@@ -22,13 +22,14 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import alexander.martinz.libs.execution.Command;
+import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
-import alexander.martinz.libs.logger.Logger;
 
 /**
  * A class which parses /proc/cpuinfo and prepares information ready for usage
@@ -89,7 +90,9 @@ public class ProcessorInfo {
             }
         });
         if (cmd == null) {
-            Logger.e(TAG, "Could not read file with root!");
+            if (Constants.DEBUG) {
+               Log.e(TAG, "Could not read file with root!");
+            }
         }
     }
 

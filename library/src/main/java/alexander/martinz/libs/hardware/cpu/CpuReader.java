@@ -22,6 +22,7 @@ import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.util.Collections;
@@ -32,7 +33,6 @@ import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.device.RootCheck;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
-import alexander.martinz.libs.logger.Logger;
 
 public class CpuReader {
     private static final String TAG = CpuReader.class.getSimpleName();
@@ -66,16 +66,19 @@ public class CpuReader {
 
         // some octa core cpus are buggy and need special treatment
         if (cpuInformation.isOctaCore) {
-            Logger.v(TAG, "using special octa core treatment");
+            if (Constants.DEBUG) {
+                Log.i(TAG, "using special octa core treatment");
+            }
             int cpuToReadFrom = 0;
             for (; cpuToReadFrom < 4; cpuToReadFrom++) {
                 final File cpuFreqDir = new File(getPathCoreBase(cpuToReadFrom), "cpufreq");
                 if (cpuFreqDir.exists()) {
-                    Logger.v(TAG, "cpu%s exists!", cpuToReadFrom);
                     break;
                 }
             }
-            Logger.v(TAG, "Using cpu%s to read from", cpuToReadFrom);
+            if (Constants.DEBUG) {
+                Log.v(TAG, String.format("Using cpu%s to read from", cpuToReadFrom));
+            }
 
             cpuInformation.freqAvail = readAvailableFrequency(cpuToReadFrom);
             cpuInformation.freqCur = readCurrentFrequency(cpuToReadFrom);
@@ -111,8 +114,8 @@ public class CpuReader {
             if (coreCount != null) {
                 // 3 + 1 = 4 cores (yes, i got these math skills in school)
                 return (coreCount + 1);
-            } else {
-                Logger.w(TAG, "Could not get core count!");
+            } else if (Constants.DEBUG) {
+                Log.w(TAG, "Could not get core count!");
             }
         }
         return Constants.INVALID;
@@ -199,7 +202,9 @@ public class CpuReader {
                 if (cpuInformation.coreCount == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_COUNT, readFileListener);
                     if (cmd == null) {
-                        Logger.e(this, "Could not read file with root!");
+                        if (Constants.DEBUG) {
+                            Log.e(TAG, "Could not read file with root!");
+                        }
                         break;
                     } else {
                         cpuInformation.coreCount = Constants.INITIALIZATION_STARTED;
@@ -208,7 +213,9 @@ public class CpuReader {
                 if (cpuInformation.freqAvail == null) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_COUNT, readFileListener);
                     if (cmd == null) {
-                        Logger.e(this, "Could not read file with root!");
+                        if (Constants.DEBUG) {
+                            Log.e(TAG, "Could not read file with root!");
+                        }
                         break;
                     } else {
                         cpuInformation.freqAvail = Collections.emptyList();
@@ -217,7 +224,9 @@ public class CpuReader {
                 if (cpuInformation.freqCur == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_CUR, readFileListener);
                     if (cmd == null) {
-                        Logger.e(this, "Could not read file with root!");
+                        if (Constants.DEBUG) {
+                            Log.e(TAG, "Could not read file with root!");
+                        }
                         break;
                     } else {
                         cpuInformation.freqCur = Constants.INITIALIZATION_STARTED;
@@ -226,7 +235,9 @@ public class CpuReader {
                 if (cpuInformation.freqMax == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_MAX, readFileListener);
                     if (cmd == null) {
-                        Logger.e(this, "Could not read file with root!");
+                        if (Constants.DEBUG) {
+                            Log.e(TAG, "Could not read file with root!");
+                        }
                         break;
                     } else {
                         cpuInformation.freqMax = Constants.INITIALIZATION_STARTED;
@@ -235,7 +246,9 @@ public class CpuReader {
                 if (cpuInformation.freqMin == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_MIN, readFileListener);
                     if (cmd == null) {
-                        Logger.e(this, "Could not read file with root!");
+                        if (Constants.DEBUG) {
+                            Log.e(TAG, "Could not read file with root!");
+                        }
                         break;
                     } else {
                         cpuInformation.freqMin = Constants.INITIALIZATION_STARTED;
@@ -244,7 +257,9 @@ public class CpuReader {
                 if (cpuInformation.temperature == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_TEMPERATURE, readFileListener);
                     if (cmd == null) {
-                        Logger.e(this, "Could not read file with root!");
+                        if (Constants.DEBUG) {
+                            Log.e(TAG, "Could not read file with root!");
+                        }
                         break;
                     } else {
                         cpuInformation.temperature = Constants.INITIALIZATION_STARTED;
