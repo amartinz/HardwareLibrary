@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +48,9 @@ public abstract class BaseSensor extends FrameLayout implements SensorEventListe
     private TextView mPowerUsage;
     private LinearLayout mDataContainer;
 
+    private static int sIconTintGlobal = Color.WHITE;
+    private int mIconTint = Integer.MIN_VALUE;
+
     public abstract Sensor getSensor();
 
     public static boolean isSupported(final Context context, final int type) {
@@ -58,10 +62,26 @@ public abstract class BaseSensor extends FrameLayout implements SensorEventListe
     }
 
     public Drawable getSensorImage() {
-        final int color = Color.WHITE;
+        final int color;
+
+        // local tint overrides global tint
+        if (mIconTint != Integer.MIN_VALUE) {
+            color = mIconTint;
+        } else {
+            color = sIconTintGlobal;
+        }
+
         final Drawable drawable = ContextCompat.getDrawable(getContext(), getImageResourceId()).mutate();
         drawable.setColorFilter(new LightingColorFilter(Color.BLACK, color));
         return drawable;
+    }
+
+    public void setIconTint(@ColorInt int iconTint) {
+        mIconTint = iconTint;
+    }
+
+    public static void setIconTintGlobal(@ColorInt int iconTint) {
+        sIconTintGlobal = iconTint;
     }
 
     public void registerSensor() {
