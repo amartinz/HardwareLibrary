@@ -21,8 +21,11 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import alexander.martinz.libs.execution.RootCheck;
+import alexander.martinz.libs.execution.RootShell;
+import alexander.martinz.libs.execution.binaries.BusyBox;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
@@ -116,10 +119,11 @@ public class Device {
         hasRoot = RootCheck.isRooted();
 
         // get su version
-        //suVersion = hasRoot ? Utils.getCommandResult("su -v", "-") : "-";
+        final String version = hasRoot ? RootShell.fireAndBlockString("su -v") : "-";
+        suVersion = TextUtils.isEmpty(version) ? "-" : version;
 
         // check busybox
-        //hasBusyBox = RootTools.isBusyboxAvailable();
+        hasBusyBox = BusyBox.isAvailable();
 
         // selinux can be toggled when in development mode, so do not cache it
         isSELinuxEnforcing = isSELinuxEnforcing(); // ehm, alright, if you say so...
@@ -129,10 +133,17 @@ public class Device {
 
     @NonNull private String getRuntime() {
         String tmp = (vmVersion.startsWith("1") ? "libdvm.so" : "libart.so");
+        final boolean isDalvik = "libdvm.so".equals(tmp);
+        final boolean isArt = "libart.so".equals(tmp);
 
-        final String runtime = "libdvm.so".equals(tmp)
-                ? "Dalvik"
-                : "libart.so".equals(tmp) ? "ART" : Constants.UNAVAILABLE;
+        final String runtime;
+        if (isArt) {
+            runtime = "ART";
+        } else if (isDalvik) {
+            runtime = "Dalvik";
+        } else {
+            runtime = Constants.UNAVAILABLE;
+        }
         tmp = String.format("%s (%s)", runtime, tmp);
 
         return tmp;
