@@ -26,6 +26,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,12 +42,15 @@ public abstract class BaseSensor extends FrameLayout implements SensorEventListe
     private SensorManager mSensorManager;
     private LayoutInflater mInflater;
 
+    private CardView mCardView;
     private ImageView mIcon;
     private TextView mTitle;
     private TextView mName;
     private TextView mVendor;
     private TextView mPowerUsage;
     private LinearLayout mDataContainer;
+
+    private static int sBackgroundColorGlobal = Integer.MAX_VALUE;
 
     private static int sIconTintGlobal = Color.WHITE;
     private int mIconTint = Integer.MIN_VALUE;
@@ -84,6 +88,14 @@ public abstract class BaseSensor extends FrameLayout implements SensorEventListe
         sIconTintGlobal = iconTint;
     }
 
+    public void setBackgroundColor(@ColorInt int backgroundColor) {
+        mCardView.setCardBackgroundColor(backgroundColor);
+    }
+
+    public static void setBackgroundColorGlobal(@ColorInt int backgroundColor) {
+        sBackgroundColorGlobal = backgroundColor;
+    }
+
     public void registerSensor() {
         getSensorManager().registerListener(this, getSensor(), getSensorDelay());
     }
@@ -99,6 +111,11 @@ public abstract class BaseSensor extends FrameLayout implements SensorEventListe
 
         final View v = LayoutInflater.from(context).inflate(R.layout.hardware_card_with_container, this, false);
         super.addView(v);
+
+        mCardView = (CardView) findViewById(R.id.card_view_root);
+        if (sBackgroundColorGlobal != Integer.MIN_VALUE) {
+            mCardView.setCardBackgroundColor(sBackgroundColorGlobal);
+        }
 
         final FrameLayout container = (FrameLayout) findViewById(R.id.layout_container);
         mInflater.inflate(R.layout.hardware_item_sensor, container, true);
