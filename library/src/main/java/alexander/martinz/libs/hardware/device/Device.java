@@ -22,6 +22,7 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 
+import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;

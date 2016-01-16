@@ -40,7 +40,7 @@ import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.execution.ShellManager;
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.device.RootCheck;
+import alexander.martinz.libs.execution.RootCheck;
 import hugo.weaving.DebugLog;
 
 public class IoUtils {

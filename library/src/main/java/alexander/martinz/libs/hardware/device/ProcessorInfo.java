@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import alexander.martinz.libs.execution.Command;
+import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 
