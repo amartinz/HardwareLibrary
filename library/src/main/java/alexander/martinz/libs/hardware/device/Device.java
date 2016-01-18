@@ -21,10 +21,8 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import alexander.martinz.libs.execution.RootCheck;
-import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.execution.binaries.BusyBox;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
@@ -117,10 +115,7 @@ public class Device {
 
     public Device update() {
         hasRoot = RootCheck.isRooted();
-
-        // get su version
-        final String version = hasRoot ? RootShell.fireAndBlockString("su -v") : "-";
-        suVersion = TextUtils.isEmpty(version) ? "-" : version;
+        suVersion = RootCheck.getSuVersion();
 
         // check busybox
         hasBusyBox = BusyBox.isAvailable();
