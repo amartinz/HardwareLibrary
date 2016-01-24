@@ -1,6 +1,5 @@
 package alexander.martinz.libs.hardware.utils;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -28,10 +27,10 @@ public class ProcessManager {
         }
     }
 
-    @WorkerThread public static List<Process> getRunningProcesses(Context context) {
+    @WorkerThread public static List<Process> getRunningProcesses() {
         final List<Process> processes = new ArrayList<>();
 
-        final NormalShell normalShell = ShellManager.get(context).getNormalShell();
+        final NormalShell normalShell = ShellManager.get().getNormalShell();
         if (normalShell != null) {
             final Command command = new Command("toolbox ps -p -P -x -c") {
                 @Override public void onCommandOutput(int id, String line) {
@@ -47,10 +46,10 @@ public class ProcessManager {
         return processes;
     }
 
-    @WorkerThread public static List<Process> getRunningApps(Context context) {
+    @WorkerThread public static List<Process> getRunningApps() {
         final List<Process> processes = new ArrayList<>();
 
-        final NormalShell normalShell = ShellManager.get(context).getNormalShell();
+        final NormalShell normalShell = ShellManager.get().getNormalShell();
         if (normalShell != null) {
             final int myPid = android.os.Process.myPid();
             final Command command = new Command("toolbox ps -p -P -x -c") {
