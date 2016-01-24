@@ -26,6 +26,10 @@ public class Constants {
     public static final int INITIALIZATION_STARTED = -2;
     public static final int INVALID = -1;
 
+    public static final String NOT_INITIALIZED_STR = "---3";
+    public static final String INITIALIZATION_STARTED_STR = "---2";
+    public static final String INVALID_STR = "---1";
+
     public static final String UNAVAILABLE = "Unavailable";
     public static final String UNKNOWN = "Unknown";
 

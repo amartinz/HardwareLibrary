@@ -17,8 +17,8 @@
 
 package alexander.martinz.libs.hardware.cpu;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
@@ -29,8 +29,8 @@ import java.util.Collections;
 import java.util.List;
 
 import alexander.martinz.libs.execution.Command;
-import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.execution.RootCheck;
+import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.IoUtils;
 import alexander.martinz.libs.hardware.utils.Utils;
 
@@ -47,6 +47,9 @@ public class CpuReader {
     private static final String PATH_CORE_FREQ_MAX = PATH_CORE_BASE + "cpufreq/scaling_max_freq";
     private static final String PATH_CORE_FREQ_MIN = PATH_CORE_BASE + "cpufreq/scaling_min_freq";
 
+    private static final String PATH_CORE_GOV_AVAIL = PATH_CORE_BASE + "cpufreq/scaling_available_governors";
+    private static final String PATH_CORE_GOV = PATH_CORE_BASE + "cpufreq/scaling_governor";
+
     // TODO: own file?
     //public static final String PATH_FREQ_TIME_IN_STATE = PATH_BASE + "cpu0/cpufreq/stats/time_in_state";
 
@@ -54,8 +57,8 @@ public class CpuReader {
 
     private CpuReader() { }
 
-    public static void getCpuInformation(Context context, CpuInformationListener listener) {
-        AsyncTask.execute(new ReadCpuInformationRunnable(context, listener));
+    public static void getCpuInformation(CpuInformationListener listener) {
+        AsyncTask.execute(new ReadCpuInformationRunnable(listener));
     }
 
     @WorkerThread public static CpuInformation getCpuInformationBlocking() {
@@ -80,15 +83,21 @@ public class CpuReader {
                 Log.v(TAG, String.format("Using cpu%s to read from", cpuToReadFrom));
             }
 
-            cpuInformation.freqAvail = readAvailableFrequency(cpuToReadFrom);
-            cpuInformation.freqCur = readCurrentFrequency(cpuToReadFrom);
-            cpuInformation.freqMax = readMaxFrequency(cpuToReadFrom);
-            cpuInformation.freqMin = readMinFrequency(cpuToReadFrom);
+            cpuInformation.freqAvail = readFreqAvail(cpuToReadFrom);
+            cpuInformation.freqCur = readFreqCur(cpuToReadFrom);
+            cpuInformation.freqMax = readFreqMax(cpuToReadFrom);
+            cpuInformation.freqMin = readFreqMin(cpuToReadFrom);
+
+            cpuInformation.govAvail = readGovAvail(cpuToReadFrom);
+            cpuInformation.govCur = readGovernor(cpuToReadFrom);
         } else {
-            cpuInformation.freqAvail = readAvailableFrequency(0);
-            cpuInformation.freqCur = readCurrentFrequency(0);
-            cpuInformation.freqMax = readMaxFrequency(0);
-            cpuInformation.freqMin = readMinFrequency(0);
+            cpuInformation.freqAvail = readFreqAvail(0);
+            cpuInformation.freqCur = readFreqCur(0);
+            cpuInformation.freqMax = readFreqMax(0);
+            cpuInformation.freqMin = readFreqMin(0);
+
+            cpuInformation.govAvail = readGovAvail(0);
+            cpuInformation.govCur = readGovernor(0);
         }
 
         cpuInformation.temperature = readTemperature();
@@ -100,7 +109,7 @@ public class CpuReader {
         return IoUtils.readSysfsIntValue(PATH_TEMPERATURE);
     }
 
-    private static int readAvailableCores() {
+    public static int readAvailableCores() {
         // example value: 0-3 -> 0, 1, 2, 3 -> we have 4 cores
         return readAvailableCores(IoUtils.readFile(PATH_COUNT));
     }
@@ -121,51 +130,78 @@ public class CpuReader {
         return Constants.INVALID;
     }
 
-    @Nullable private static List<Integer> readAvailableFrequency(int cpuCore) {
+    @NonNull public static List<Integer> readFreqAvail(int cpuCore) {
         final String freqString = IoUtils.readFile(getPathCoreFreqAvail(cpuCore));
         if (TextUtils.isEmpty(freqString)) {
-            return null;
+            return Collections.emptyList();
         }
         return Utils.stringToListInteger(freqString);
     }
 
-    @Nullable private static List<Integer> readAvailableFrequency(@Nullable final String freqString) {
+    @NonNull private static List<Integer> readFreqAvail(@Nullable final String freqString) {
         if (TextUtils.isEmpty(freqString)) {
-            return null;
+            return Collections.emptyList();
         }
         return Utils.stringToListInteger(freqString);
     }
 
-    private static int readCurrentFrequency(int cpuCore) {
+    @NonNull public static List<String> readGovAvail(int cpuCore) {
+        final String freqString = IoUtils.readFile(getPathCoreGovAvail(cpuCore));
+        if (TextUtils.isEmpty(freqString)) {
+            return Collections.emptyList();
+        }
+        return Utils.stringToList(freqString);
+    }
+
+    @NonNull private static List<String> readGovAvail(@Nullable final String govString) {
+        if (TextUtils.isEmpty(govString)) {
+            return Collections.emptyList();
+        }
+        return Utils.stringToList(govString);
+    }
+
+    private static int readFreqCur(int cpuCore) {
         return IoUtils.readSysfsIntValue(getPathCoreFreqCur(cpuCore));
     }
 
-    private static int readMaxFrequency(int cpuCore) {
+    private static int readFreqMax(int cpuCore) {
         return IoUtils.readSysfsIntValue(getPathCoreFreqMax(cpuCore));
     }
 
-    private static int readMinFrequency(int cpuCore) {
+    private static int readFreqMin(int cpuCore) {
         return IoUtils.readSysfsIntValue(getPathCoreFreqMin(cpuCore));
     }
 
-    private static String getPathCoreBase(int cpuCore) {
+    private static String readGovernor(int cpuCore) {
+        return IoUtils.readSysfsStringValue(getPathCoreGov(cpuCore));
+    }
+
+    public static String getPathCoreBase(int cpuCore) {
         return String.format(PATH_CORE_BASE, cpuCore);
     }
 
-    private static String getPathCoreFreqAvail(int cpuCore) {
+    public static String getPathCoreFreqAvail(int cpuCore) {
         return String.format(PATH_CORE_FREQ_AVAIL, cpuCore);
     }
 
-    private static String getPathCoreFreqCur(int cpuCore) {
+    public static String getPathCoreFreqCur(int cpuCore) {
         return String.format(PATH_CORE_FREQ_CUR, cpuCore);
     }
 
-    private static String getPathCoreFreqMax(int cpuCore) {
+    public static String getPathCoreFreqMax(int cpuCore) {
         return String.format(PATH_CORE_FREQ_MAX, cpuCore);
     }
 
-    private static String getPathCoreFreqMin(int cpuCore) {
+    public static String getPathCoreFreqMin(int cpuCore) {
         return String.format(PATH_CORE_FREQ_MIN, cpuCore);
+    }
+
+    public static String getPathCoreGovAvail(int cpuCore) {
+        return String.format(PATH_CORE_GOV_AVAIL, cpuCore);
+    }
+
+    public static String getPathCoreGov(int cpuCore) {
+        return String.format(PATH_CORE_GOV, cpuCore);
     }
 
     private static class ReadCpuInformationRunnable implements Runnable {
@@ -174,18 +210,17 @@ public class CpuReader {
         private static final String T_PATH_FREQ_CUR = getPathCoreFreqCur(0);
         private static final String T_PATH_FREQ_MAX = getPathCoreFreqMax(0);
         private static final String T_PATH_FREQ_MIN = getPathCoreFreqMin(0);
+        private static final String T_PATH_GOV_AVAIL = getPathCoreGovAvail(0);
+        private static final String T_PATH_GOV = getPathCoreGov(0);
         private static final String T_PATH_TEMPERATURE = PATH_TEMPERATURE;
-
-        private final Context context;
 
         private final CpuInformationListener listener;
 
         private CpuInformation cpuInformation;
         private boolean hasFinished;
 
-        public ReadCpuInformationRunnable(Context context, CpuInformationListener listener) {
+        public ReadCpuInformationRunnable(CpuInformationListener listener) {
             super();
-            this.context = context;
             this.listener = listener;
         }
 
@@ -202,20 +237,14 @@ public class CpuReader {
                 if (cpuInformation.coreCount == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_COUNT, readFileListener);
                     if (cmd == null) {
-                        if (Constants.DEBUG) {
-                            Log.e(TAG, "Could not read file with root!");
-                        }
                         break;
                     } else {
                         cpuInformation.coreCount = Constants.INITIALIZATION_STARTED;
                     }
                 }
                 if (cpuInformation.freqAvail == null) {
-                    Command cmd = IoUtils.readFileRoot(T_PATH_COUNT, readFileListener);
+                    Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_AVAIL, readFileListener);
                     if (cmd == null) {
-                        if (Constants.DEBUG) {
-                            Log.e(TAG, "Could not read file with root!");
-                        }
                         break;
                     } else {
                         cpuInformation.freqAvail = Collections.emptyList();
@@ -224,9 +253,6 @@ public class CpuReader {
                 if (cpuInformation.freqCur == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_CUR, readFileListener);
                     if (cmd == null) {
-                        if (Constants.DEBUG) {
-                            Log.e(TAG, "Could not read file with root!");
-                        }
                         break;
                     } else {
                         cpuInformation.freqCur = Constants.INITIALIZATION_STARTED;
@@ -235,9 +261,6 @@ public class CpuReader {
                 if (cpuInformation.freqMax == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_MAX, readFileListener);
                     if (cmd == null) {
-                        if (Constants.DEBUG) {
-                            Log.e(TAG, "Could not read file with root!");
-                        }
                         break;
                     } else {
                         cpuInformation.freqMax = Constants.INITIALIZATION_STARTED;
@@ -246,20 +269,30 @@ public class CpuReader {
                 if (cpuInformation.freqMin == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_FREQ_MIN, readFileListener);
                     if (cmd == null) {
-                        if (Constants.DEBUG) {
-                            Log.e(TAG, "Could not read file with root!");
-                        }
                         break;
                     } else {
                         cpuInformation.freqMin = Constants.INITIALIZATION_STARTED;
                     }
                 }
+                if (cpuInformation.govAvail == null) {
+                    Command cmd = IoUtils.readFileRoot(T_PATH_GOV_AVAIL, readFileListener);
+                    if (cmd == null) {
+                        break;
+                    } else {
+                        cpuInformation.govAvail = Collections.emptyList();
+                    }
+                }
+                if (Constants.NOT_INITIALIZED_STR.equals(cpuInformation.govCur)) {
+                    Command cmd = IoUtils.readFileRoot(T_PATH_GOV, readFileListener);
+                    if (cmd == null) {
+                        break;
+                    } else {
+                        cpuInformation.govCur = Constants.INITIALIZATION_STARTED_STR;
+                    }
+                }
                 if (cpuInformation.temperature == Constants.NOT_INITIALIZED) {
                     Command cmd = IoUtils.readFileRoot(T_PATH_TEMPERATURE, readFileListener);
                     if (cmd == null) {
-                        if (Constants.DEBUG) {
-                            Log.e(TAG, "Could not read file with root!");
-                        }
                         break;
                     } else {
                         cpuInformation.temperature = Constants.INITIALIZATION_STARTED;
@@ -280,13 +313,17 @@ public class CpuReader {
                 if (T_PATH_COUNT.equals(path)) {
                     cpuInformation.coreCount = Utils.tryParseInt(content);
                 } else if (T_PATH_FREQ_AVAIL.equals(path)) {
-                    cpuInformation.freqAvail = readAvailableFrequency(content);
+                    cpuInformation.freqAvail = readFreqAvail(content);
                 } else if (T_PATH_FREQ_CUR.equals(path)) {
                     cpuInformation.freqCur = Utils.tryParseInt(content);
                 } else if (T_PATH_FREQ_MAX.equals(path)) {
                     cpuInformation.freqMax = Utils.tryParseInt(content);
                 } else if (T_PATH_FREQ_MIN.equals(path)) {
                     cpuInformation.freqMin = Utils.tryParseInt(content);
+                } else if (T_PATH_GOV_AVAIL.equals(path)) {
+                    cpuInformation.govAvail = readGovAvail(content);
+                } else if (T_PATH_GOV.equals(path)) {
+                    cpuInformation.govCur = content;
                 } else if (T_PATH_TEMPERATURE.equals(path)) {
                     cpuInformation.temperature = Utils.tryParseInt(content);
                 }

@@ -168,6 +168,14 @@ public class IoUtils {
         return Constants.INVALID;
     }
 
+    @WorkerThread public static String readSysfsStringValue(final String path) {
+        final String rawString = IoUtils.readFile(path);
+        if (!TextUtils.isEmpty(rawString)) {
+            return rawString.trim();
+        }
+        return Constants.INVALID_STR;
+    }
+
     @WorkerThread @Nullable public static String[] readStringArray(final String path) {
         final String line = readOneLine(path);
         if (line != null) {
@@ -184,34 +192,6 @@ public class IoUtils {
     @WorkerThread @Nullable public static String readOneLine(final String path) {
         final String content = readFileInternal(path, true);
         return ((content != null) ? content.trim() : null);
-    }
-
-    @WorkerThread
-    @Nullable public static Command readFileRoot(@Nullable final String path, @Nullable final ReadFileListener readFileListener) {
-        if (TextUtils.isEmpty(path) || readFileListener == null || !RootCheck.isRooted()) {
-            return null;
-        }
-
-        final Command cmd = new Command(String.format("cat %s", path)) {
-            private final StringBuilder sb = new StringBuilder();
-
-            @Override public void onCommandCompleted(int id, int exitCode) {
-                readFileListener.onFileRead(path, sb.toString());
-                super.onCommandCompleted(id, exitCode);
-            }
-
-            @Override public void onCommandOutput(int id, String line) {
-                sb.append(line).append('\n');
-                super.onCommandOutput(id, line);
-            }
-        };
-
-        final RootShell rootShell = ShellManager.get().getRootShell();
-        if (rootShell != null) {
-            rootShell.add(cmd);
-            return cmd;
-        }
-        return null;
     }
 
     @WorkerThread @Nullable private static String readFileInternal(final String path, final boolean oneLine) {
@@ -241,6 +221,34 @@ public class IoUtils {
             }
         } else if (Constants.DEBUG) {
             Log.w(TAG, String.format("Can not read file, because it is not readable -> %s", path));
+        }
+        return null;
+    }
+
+    @WorkerThread
+    @Nullable public static Command readFileRoot(@Nullable final String path, @Nullable final ReadFileListener readFileListener) {
+        if (TextUtils.isEmpty(path) || readFileListener == null || !RootCheck.isRooted()) {
+            return null;
+        }
+
+        final Command cmd = new Command(String.format("cat %s", path)) {
+            private final StringBuilder sb = new StringBuilder();
+
+            @Override public void onCommandCompleted(int id, int exitCode) {
+                readFileListener.onFileRead(path, sb.toString());
+                super.onCommandCompleted(id, exitCode);
+            }
+
+            @Override public void onCommandOutput(int id, String line) {
+                sb.append(line).append('\n');
+                super.onCommandOutput(id, line);
+            }
+        };
+
+        final RootShell rootShell = ShellManager.get().getRootShell();
+        if (rootShell != null) {
+            rootShell.add(cmd);
+            return cmd;
         }
         return null;
     }

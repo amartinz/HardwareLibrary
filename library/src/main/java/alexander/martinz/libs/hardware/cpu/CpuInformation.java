@@ -40,6 +40,9 @@ public class CpuInformation {
     public int freqMax = Constants.NOT_INITIALIZED;
     public int freqMin = Constants.NOT_INITIALIZED;
 
+    public List<String> govAvail;
+    public String govCur = Constants.NOT_INITIALIZED_STR;
+
     public int temperature = Constants.NOT_INITIALIZED;
 
     public void resetInvalid() {
@@ -54,6 +57,9 @@ public class CpuInformation {
         }
         if (freqMin == Constants.INVALID) {
             freqMin = Constants.NOT_INITIALIZED;
+        }
+        if (Constants.INVALID_STR.equals(govCur)) {
+            govCur = Constants.NOT_INITIALIZED_STR;
         }
         if (temperature == Constants.INVALID) {
             temperature = Constants.NOT_INITIALIZED;
@@ -80,6 +86,13 @@ public class CpuInformation {
              (freqMin == Constants.INITIALIZATION_STARTED))) {
             return true;
         }
+        if (govAvail == null) {
+            return true;
+        }
+        if (((Constants.NOT_INITIALIZED_STR.equals(govCur)) ||
+             (Constants.INITIALIZATION_STARTED_STR.equals(govCur)))) {
+            return true;
+        }
         if (((temperature == Constants.NOT_INITIALIZED) ||
              (temperature == Constants.INITIALIZATION_STARTED))) {
             return true;
@@ -92,6 +105,7 @@ public class CpuInformation {
                 ((freqCur != Constants.NOT_INITIALIZED) && (freqCur != Constants.INVALID)) &&
                 ((freqMax != Constants.NOT_INITIALIZED) && (freqMax != Constants.INVALID)) &&
                 ((freqMin != Constants.NOT_INITIALIZED) && (freqMin != Constants.INVALID)) &&
+                ((!Constants.NOT_INITIALIZED_STR.equals(govCur)) && (!Constants.INVALID_STR.equals(govCur))) &&
                 ((temperature != Constants.NOT_INITIALIZED) && (temperature != Constants.INVALID)));
     }
 
@@ -122,6 +136,29 @@ public class CpuInformation {
             return String.valueOf(value) + " MHz";
         }
         return null;
+    }
+
+    /**
+     * Convert from MHz
+     *
+     * @param value The string in MHz format (eg. "2457 MHz")
+     * @return The original value as integer (eg. 2457000)
+     */
+    public static int fromMhz(@Nullable String value) {
+        if (TextUtils.isEmpty(value)) {
+            return -1;
+        }
+        if (!value.contains("MHz")) {
+            // no MHz, maybe we have passed in a correct frequency already...
+            return Utils.tryParseInt(value.trim(), -1);
+        }
+        value = value.replace("MHz", "").trim();
+
+        final int intValue = Utils.tryParseInt(value, -1);
+        if (intValue != -1) {
+            return intValue * 1000;
+        }
+        return -1;
     }
 
     public static String listFrequenciesFormatted(@Nullable final List<Integer> freqAvail) {

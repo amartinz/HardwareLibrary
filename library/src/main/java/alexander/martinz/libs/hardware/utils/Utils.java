@@ -23,6 +23,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -36,9 +37,13 @@ public class Utils {
     private Utils() { }
 
     public static int tryParseInt(final String toParse) {
+        return tryParseInt(toParse, Constants.INVALID);
+    }
+
+    public static int tryParseInt(final String toParse, final int defInt) {
         final Integer integer = tryParseIntRaw(toParse);
         if (integer == null) {
-            return Constants.INVALID;
+            return defInt;
         }
         return integer;
     }
@@ -107,6 +112,16 @@ public class Utils {
         final Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(time);
         return DateFormat.format("dd-MM-yyyy", cal).toString();
+    }
+
+    public static List<String> stringToList(@Nullable String arrayString) {
+        if (TextUtils.isEmpty(arrayString)) {
+            return Collections.emptyList();
+        }
+        final String[] splitted = arrayString.trim().split(" ");
+        final ArrayList<String> list = new ArrayList<>(Arrays.asList(splitted));
+        Collections.sort(list);
+        return list;
     }
 
     public static List<Integer> stringToListInteger(@Nullable String arrayString) {
