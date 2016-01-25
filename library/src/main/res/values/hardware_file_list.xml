@@ -23,6 +23,7 @@
     <string-array name="gpu_base" translatable="false">
         <item>/sys/class/kgsl/kgsl-3d0</item>
         <item>/sys/devices/platform/galcore/gpu/gpu0/gpufreq</item>
+        <item>/sys/kernel/tegra_gpu</item>
     </string-array>
     <!-- Governor -->
     <string-array name="gpu_gov_path" translatable="false">
@@ -40,14 +41,17 @@
         <item>/gpu_available_frequencies</item>
         <item>/devfreq/available_frequencies</item>
         <item>/scaling_available_frequencies</item>
+        <item>/gpu_available_rates</item>
     </string-array>
     <string-array name="gpu_freqs_cur" translatable="false">
         <item>/devfreq/cur_freq</item>
+        <item>/gpu_rate</item>
     </string-array>
     <string-array name="gpu_freqs_max" translatable="false">
         <item>/max_gpuclk</item>
         <item>/devfreq/max_freq</item>
         <item>/scaling_max_freq</item>
+        <item>/gpu_cap_rate</item>
     </string-array>
     <string-array name="gpu_freqs_min" translatable="false">
         <item>/min_gpuclk</item>
