@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.utils.Utils;
+import alexander.martinz.libs.hardware.utils.HwUtils;
 
 public class CpuInformation {
     private static final String TAG = CpuInformation.class.getSimpleName();
@@ -123,7 +123,7 @@ public class CpuInformation {
         int value = Constants.INVALID;
         if (!TextUtils.isEmpty(mhzString)) {
             try {
-                value = Utils.tryParseInt(mhzString) / 1000;
+                value = HwUtils.tryParseInt(mhzString) / 1000;
             } catch (NumberFormatException exc) {
                 if (Constants.DEBUG) {
                     Log.e(TAG, "toMhz", exc);
@@ -150,11 +150,11 @@ public class CpuInformation {
         }
         if (!value.contains("MHz")) {
             // no MHz, maybe we have passed in a correct frequency already...
-            return Utils.tryParseInt(value.trim(), -1);
+            return HwUtils.tryParseInt(value.trim(), -1);
         }
         value = value.replace("MHz", "").trim();
 
-        final int intValue = Utils.tryParseInt(value, -1);
+        final int intValue = HwUtils.tryParseInt(value, -1);
         if (intValue != -1) {
             return intValue * 1000;
         }

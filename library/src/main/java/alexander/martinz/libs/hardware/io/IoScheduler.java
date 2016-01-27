@@ -31,7 +31,7 @@ import java.util.List;
 import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.execution.ShellManager;
-import alexander.martinz.libs.hardware.utils.IoUtils;
+import alexander.martinz.libs.hardware.utils.HwIoUtils;
 
 public class IoScheduler {
 
@@ -63,7 +63,7 @@ public class IoScheduler {
      */
     @WorkerThread @Nullable public static String[] getAvailableIoSchedulers() {
         String[] schedulers = null;
-        final String[] aux = IoUtils.readStringArray(IO_SCHEDULER_PATH[0]);
+        final String[] aux = HwIoUtils.readStringArray(IO_SCHEDULER_PATH[0]);
         if (aux != null) {
             schedulers = new String[aux.length];
             for (int i = 0; i < aux.length; i++) {
@@ -90,7 +90,7 @@ public class IoScheduler {
     }
 
     public static void getIoScheduler(final IoSchedulerListener listener, final Handler handler) {
-        final String content = IoUtils.readFile(IO_SCHEDULER_PATH[0]);
+        final String content = HwIoUtils.readFile(IO_SCHEDULER_PATH[0]);
         if (!TextUtils.isEmpty(content)) {
             processIoSchedulerContent(content, listener, handler);
             return;

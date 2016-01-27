@@ -43,8 +43,8 @@ import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.execution.RootCheck;
 import hugo.weaving.DebugLog;
 
-public class IoUtils {
-    private static final String TAG = IoUtils.class.getSimpleName();
+public class HwIoUtils {
+    private static final String TAG = HwIoUtils.class.getSimpleName();
 
     private static final Random sRandom = new Random(System.nanoTime());
 
@@ -77,7 +77,7 @@ public class IoUtils {
             if (hasPrefix) {
                 path = prefix + path;
             }
-            if (IoUtils.fileExists(path)) {
+            if (HwIoUtils.fileExists(path)) {
                 basePath = path;
                 break;
             }
@@ -161,15 +161,15 @@ public class IoUtils {
     }
 
     @WorkerThread public static int readSysfsIntValue(final String path) {
-        final String rawString = IoUtils.readFile(path);
+        final String rawString = HwIoUtils.readFile(path);
         if (!TextUtils.isEmpty(rawString)) {
-            return Utils.tryParseInt(rawString);
+            return HwUtils.tryParseInt(rawString);
         }
         return Constants.INVALID;
     }
 
     @WorkerThread public static String readSysfsStringValue(final String path) {
-        final String rawString = IoUtils.readFile(path);
+        final String rawString = HwIoUtils.readFile(path);
         if (!TextUtils.isEmpty(rawString)) {
             return rawString.trim();
         }
@@ -279,7 +279,7 @@ public class IoUtils {
                 return false;
             }
 
-            final int id = sRandom.nextInt(1000);
+            final int id = sRandom.nextInt(10000);
             final String cmd = String.format("echo \'%s\' > %s", content, file.getAbsolutePath());
             final Command writeCommand = new Command(id, cmd);
             rootShell.add(writeCommand);

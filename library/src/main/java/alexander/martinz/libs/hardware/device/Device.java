@@ -23,10 +23,10 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import alexander.martinz.libs.execution.RootCheck;
-import alexander.martinz.libs.execution.binaries.BusyBox;
+import alexander.martinz.libs.execution.BusyBox;
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.utils.IoUtils;
-import alexander.martinz.libs.hardware.utils.Utils;
+import alexander.martinz.libs.hardware.utils.HwIoUtils;
+import alexander.martinz.libs.hardware.utils.HwUtils;
 
 public class Device {
     public final String platformVersion;
@@ -81,7 +81,7 @@ public class Device {
         platformId = Build.DISPLAY;
         platformType = Build.VERSION.CODENAME + " " + Build.TYPE;
         platformTags = Build.TAGS;
-        platformBuildType = Utils.getDate(Build.TIME);
+        platformBuildType = HwUtils.getDate(Build.TIME);
 
         vmVersion = System.getProperty("java.vm.version", "-");
         vmLibrary = getRuntime();
@@ -163,13 +163,13 @@ public class Device {
     private boolean isSELinuxEnforcing() {
         // We know about a 4.2 release, which has enforcing selinux
         if (Build.VERSION.SDK_INT >= 17) {
-            final int enforcingState = IoUtils.readSysfsIntValue("/sys/fs/selinux/enforce");
+            final int enforcingState = HwIoUtils.readSysfsIntValue("/sys/fs/selinux/enforce");
 
             // 4.4+ builds (should) be enforcing by default
             if (enforcingState == Constants.INVALID) {
                 isSELinuxEnforcing = (Build.VERSION.SDK_INT >= 19);
             } else {
-                isSELinuxEnforcing = Utils.isEnabled(Integer.toString(enforcingState), false);
+                isSELinuxEnforcing = HwUtils.isEnabled(Integer.toString(enforcingState), false);
             }
         }
 

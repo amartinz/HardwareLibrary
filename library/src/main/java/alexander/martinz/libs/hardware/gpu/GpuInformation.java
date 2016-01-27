@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.utils.Utils;
+import alexander.martinz.libs.hardware.utils.HwUtils;
 
 public class GpuInformation {
     private static final String TAG = GpuInformation.class.getSimpleName();
@@ -88,7 +88,7 @@ public class GpuInformation {
         int value = Constants.INVALID;
         if (!TextUtils.isEmpty(mhzString)) {
             try {
-                value = Utils.tryParseInt(mhzString) / 1000000;
+                value = HwUtils.tryParseInt(mhzString) / 1000000;
             } catch (NumberFormatException exc) {
                 if (Constants.DEBUG) {
                     Log.e(TAG, "toMhz", exc);

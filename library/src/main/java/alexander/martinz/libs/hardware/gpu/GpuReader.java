@@ -32,8 +32,8 @@ import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.R;
 import alexander.martinz.libs.execution.RootCheck;
-import alexander.martinz.libs.hardware.utils.IoUtils;
-import alexander.martinz.libs.hardware.utils.Utils;
+import alexander.martinz.libs.hardware.utils.HwIoUtils;
+import alexander.martinz.libs.hardware.utils.HwUtils;
 
 public class GpuReader {
     private static final String TAG = GpuReader.class.getSimpleName();
@@ -60,35 +60,35 @@ public class GpuReader {
             gpuInformation.freqMin = gpuInformation.freqAvailable.get(0);
         }
 
-        gpuInformation.freqCur = IoUtils.readSysfsIntValue(getFreqCurPath(context));
+        gpuInformation.freqCur = HwIoUtils.readSysfsIntValue(getFreqCurPath(context));
 
         return gpuInformation;
     }
 
     @Nullable public static String getBasePath(Context context) {
         if (basePath == null) {
-            basePath = IoUtils.getPath(context, R.array.gpu_base);
+            basePath = HwIoUtils.getPath(context, R.array.gpu_base);
         }
         return basePath;
     }
 
     @Nullable public static String getFreqAvailPath(Context context) {
         if (freqAvailPath == null) {
-            freqAvailPath = IoUtils.getPath(context, R.array.gpu_freqs_avail, getBasePath(context));
+            freqAvailPath = HwIoUtils.getPath(context, R.array.gpu_freqs_avail, getBasePath(context));
         }
         return freqAvailPath;
     }
 
     @Nullable public static String getFreqCurPath(Context context) {
         if (freqCurPath == null) {
-            freqCurPath = IoUtils.getPath(context, R.array.gpu_freqs_cur, getBasePath(context));
+            freqCurPath = HwIoUtils.getPath(context, R.array.gpu_freqs_cur, getBasePath(context));
         }
         return freqCurPath;
     }
 
     @NonNull private static ArrayList<Integer> readAvailableFrequencies(Context context) {
         final String freqAvailPath = getFreqAvailPath(context);
-        return readAvailableFrequencies(IoUtils.readFile(freqAvailPath));
+        return readAvailableFrequencies(HwIoUtils.readFile(freqAvailPath));
     }
 
     @NonNull private static ArrayList<Integer> readAvailableFrequencies(final String freqString) {
@@ -96,7 +96,7 @@ public class GpuReader {
         if (!TextUtils.isEmpty(freqString)) {
             final String[] splitted = freqString.split(" ");
             for (final String s : splitted) {
-                availableFreqs.add(Utils.tryParseInt(s));
+                availableFreqs.add(HwUtils.tryParseInt(s));
             }
         }
         if (!availableFreqs.isEmpty()) {
@@ -129,7 +129,7 @@ public class GpuReader {
 
             while (!hasFinished) {
                 if (gpuInformation.freqCur == Constants.NOT_INITIALIZED) {
-                    Command cmd = IoUtils.readFileRoot(getFreqCurPath(context), readFileListener);
+                    Command cmd = HwIoUtils.readFileRoot(getFreqCurPath(context), readFileListener);
                     if (cmd == null) {
                         if (Constants.DEBUG) {
                             Log.e(TAG, "Could not read file with root!");
@@ -141,7 +141,7 @@ public class GpuReader {
                 }
                 if ((gpuInformation.freqMax == Constants.NOT_INITIALIZED) ||
                     (gpuInformation.freqMin == Constants.NOT_INITIALIZED)) {
-                    Command cmd = IoUtils.readFileRoot(getFreqAvailPath(context), readFileListener);
+                    Command cmd = HwIoUtils.readFileRoot(getFreqAvailPath(context), readFileListener);
                     if (cmd == null) {
                         if (Constants.DEBUG) {
                             Log.e(TAG, "Could not read file with root!");
@@ -162,7 +162,7 @@ public class GpuReader {
             }
         }
 
-        private final IoUtils.ReadFileListener readFileListener = new IoUtils.ReadFileListener() {
+        private final HwIoUtils.ReadFileListener readFileListener = new HwIoUtils.ReadFileListener() {
             @Override public void onFileRead(String path, String content) {
                 if (TextUtils.isEmpty(path)) {
                     return;
@@ -177,7 +177,7 @@ public class GpuReader {
                         gpuInformation.freqMin = availableFreqs.get(0);
                     }
                 } else if (TextUtils.equals(getFreqCurPath(context), path)) {
-                    gpuInformation.freqCur = Utils.tryParseInt(content);
+                    gpuInformation.freqCur = HwUtils.tryParseInt(content);
                 }
             }
         };

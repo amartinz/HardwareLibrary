@@ -31,10 +31,10 @@ import java.util.Locale;
 
 import alexander.martinz.libs.hardware.Constants;
 
-public class Utils {
-    private static final String TAG = Utils.class.getSimpleName();
+public class HwUtils {
+    private static final String TAG = HwUtils.class.getSimpleName();
 
-    private Utils() { }
+    private HwUtils() { }
 
     public static int tryParseInt(final String toParse) {
         return tryParseInt(toParse, Constants.INVALID);

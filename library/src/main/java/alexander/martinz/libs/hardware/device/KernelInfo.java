@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.utils.IoUtils;
+import alexander.martinz.libs.hardware.utils.HwIoUtils;
 
 /**
  * A class which parses /proc/version and prepares information ready for usage
@@ -56,7 +56,7 @@ public class KernelInfo {
     }
 
     @WorkerThread public static void feedWithInformationBlocking(final Device.KernelInfoListener kernelInfoListener) {
-        final String content = IoUtils.readFile(PATH_PROC_VERSION);
+        final String content = HwIoUtils.readFile(PATH_PROC_VERSION);
         if (!TextUtils.isEmpty(content)) {
             feedWithInformation(content, kernelInfoListener);
             return;
@@ -67,7 +67,7 @@ public class KernelInfo {
             return;
         }
 
-        final Command cmd = IoUtils.readFileRoot(PATH_PROC_VERSION, new IoUtils.ReadFileListener() {
+        final Command cmd = HwIoUtils.readFileRoot(PATH_PROC_VERSION, new HwIoUtils.ReadFileListener() {
             @Override public void onFileRead(String path, String content) {
                 feedWithInformation(content, kernelInfoListener);
             }

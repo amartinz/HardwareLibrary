@@ -22,8 +22,8 @@ import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.utils.IoUtils;
-import alexander.martinz.libs.hardware.utils.Utils;
+import alexander.martinz.libs.hardware.utils.HwIoUtils;
+import alexander.martinz.libs.hardware.utils.HwUtils;
 
 /**
  * Provides information about the device's memory
@@ -62,7 +62,7 @@ public class MemoryInfo {
         final MemoryInfo memoryInfo = new MemoryInfo();
         memoryInfo.type = type;
 
-        final String input = IoUtils.readFile("/proc/meminfo");
+        final String input = HwIoUtils.readFile("/proc/meminfo");
         if (!TextUtils.isEmpty(input)) {
             final String[] parts = input.split("\n");
             for (final String s : parts) {
@@ -115,15 +115,15 @@ public class MemoryInfo {
 
             if (content.startsWith(MEMTOTAL)) {
                 content = content.replace(MEMTOTAL, "").trim();
-                total = Utils.tryParseLong(content);
+                total = HwUtils.tryParseLong(content);
                 return total;
             } else if (content.startsWith(MEMCACHED)) {
                 content = content.replace(MEMCACHED, "").trim();
-                cached = Utils.tryParseLong(content);
+                cached = HwUtils.tryParseLong(content);
                 return cached;
             } else if (content.startsWith(MEMFREE)) {
                 content = content.replace(MEMFREE, "").trim();
-                free = Utils.tryParseLong(content);
+                free = HwUtils.tryParseLong(content);
                 return free;
             }
         }

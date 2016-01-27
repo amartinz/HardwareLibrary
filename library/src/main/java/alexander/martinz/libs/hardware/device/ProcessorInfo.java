@@ -30,7 +30,7 @@ import java.util.List;
 import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.Constants;
-import alexander.martinz.libs.hardware.utils.IoUtils;
+import alexander.martinz.libs.hardware.utils.HwIoUtils;
 
 /**
  * A class which parses /proc/cpuinfo and prepares information ready for usage
@@ -74,7 +74,7 @@ public class ProcessorInfo {
     }
 
     @WorkerThread public static void feedWithInformationBlocking(final Device.ProcessorInfoListener procInfoListener) {
-        final String content = IoUtils.readFile(PATH_PROC_CPU);
+        final String content = HwIoUtils.readFile(PATH_PROC_CPU);
         if (!TextUtils.isEmpty(content)) {
             feedWithInformation(content, procInfoListener);
             return;
@@ -85,7 +85,7 @@ public class ProcessorInfo {
             return;
         }
 
-        final Command cmd = IoUtils.readFileRoot(PATH_PROC_CPU, new IoUtils.ReadFileListener() {
+        final Command cmd = HwIoUtils.readFileRoot(PATH_PROC_CPU, new HwIoUtils.ReadFileListener() {
             @Override public void onFileRead(String path, String content) {
                 feedWithInformation(content, procInfoListener);
             }

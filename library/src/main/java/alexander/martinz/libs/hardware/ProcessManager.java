@@ -1,4 +1,4 @@
-package alexander.martinz.libs.hardware.utils;
+package alexander.martinz.libs.hardware;
 
 import android.os.Build;
 import android.os.Parcel;

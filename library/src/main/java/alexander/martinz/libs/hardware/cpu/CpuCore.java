@@ -19,7 +19,7 @@ package alexander.martinz.libs.hardware.cpu;
 
 import android.text.TextUtils;
 
-import alexander.martinz.libs.hardware.utils.Utils;
+import alexander.martinz.libs.hardware.utils.HwUtils;
 
 public class CpuCore {
     public int core;
@@ -40,12 +40,12 @@ public class CpuCore {
     }
 
     public CpuCore setCurrent(String current) {
-        this.current = Utils.tryParseInt(current, 0);
+        this.current = HwUtils.tryParseInt(current, 0);
         return this;
     }
 
     public CpuCore setMax(String max) {
-        this.max = Utils.tryParseInt(max, 0);
+        this.max = HwUtils.tryParseInt(max, 0);
         return this;
     }
 

@@ -23,7 +23,7 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 
-import alexander.martinz.libs.hardware.utils.IoUtils;
+import alexander.martinz.libs.hardware.utils.HwIoUtils;
 
 /**
  * A class for interacting with the device's emmc
@@ -53,10 +53,10 @@ public class EmmcInfo {
     }
 
     private EmmcInfo() {
-        cid = IoUtils.readOneLine("/sys/class/block/mmcblk0/device/cid");
-        date = IoUtils.readOneLine("/sys/class/block/mmcblk0/device/date");
-        mid = IoUtils.readOneLine("/sys/class/block/mmcblk0/device/manfid");
-        name = IoUtils.readOneLine("/sys/class/block/mmcblk0/device/name");
+        cid = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/cid");
+        date = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/date");
+        mid = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/manfid");
+        name = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/name");
         rev = ((cid != null && cid.length() > 20) ? cid.substring(18, 20) : "-");
     }
 
