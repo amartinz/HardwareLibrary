@@ -67,21 +67,21 @@ public class GpuReader {
 
     @Nullable public static String getBasePath(Context context) {
         if (basePath == null) {
-            basePath = HwIoUtils.getPath(context, R.array.gpu_base);
+            basePath = HwIoUtils.getPath(context, R.array.hardware_gpu_base);
         }
         return basePath;
     }
 
     @Nullable public static String getFreqAvailPath(Context context) {
         if (freqAvailPath == null) {
-            freqAvailPath = HwIoUtils.getPath(context, R.array.gpu_freqs_avail, getBasePath(context));
+            freqAvailPath = HwIoUtils.getPath(context, R.array.hardware_gpu_freqs_avail, getBasePath(context));
         }
         return freqAvailPath;
     }
 
     @Nullable public static String getFreqCurPath(Context context) {
         if (freqCurPath == null) {
-            freqCurPath = HwIoUtils.getPath(context, R.array.gpu_freqs_cur, getBasePath(context));
+            freqCurPath = HwIoUtils.getPath(context, R.array.hardware_gpu_freqs_cur, getBasePath(context));
         }
         return freqCurPath;
     }

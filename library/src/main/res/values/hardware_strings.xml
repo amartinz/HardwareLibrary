@@ -48,4 +48,8 @@
     <string name="hardware_steps">Steps</string>
     <string name="hardware_far">Far</string>
     <string name="hardware_near">Near</string>
+
+    <!-- Display color -->
+    <!-- No spaces after ',' -->
+    <string name="hardware_display_gamma_calibration_desc_one">Red,Green,Blue</string>
 </resources>

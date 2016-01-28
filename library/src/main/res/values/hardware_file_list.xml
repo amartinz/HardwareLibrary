@@ -20,42 +20,88 @@
     <!-- GPU -->
     <!-- Base paths, the other paths use this one + their path.
          for example: /sys/class/kgsl + /kgsl-3d0/pwrscale/trustzone/governor -->
-    <string-array name="gpu_base" translatable="false">
+    <string-array name="hardware_gpu_base" translatable="false">
         <item>/sys/class/kgsl/kgsl-3d0</item>
         <item>/sys/devices/platform/galcore/gpu/gpu0/gpufreq</item>
         <item>/sys/kernel/tegra_gpu</item>
     </string-array>
     <!-- Governor -->
-    <string-array name="gpu_gov_path" translatable="false">
+    <string-array name="hardware_gpu_gov_path" translatable="false">
         <item>/pwrscale/trustzone/governor</item>
         <item>/devfreq/governor</item>
         <item>/scaling_cur_governor</item>
         <item>/scaling_governor</item>
     </string-array>
-    <string-array name="gpu_govs_avail_path" translatable="false">
+    <string-array name="hardware_gpu_govs_avail_path" translatable="false">
         <item>/devfreq/available_governors</item>
         <item>/scaling_available_governors</item>
     </string-array>
     <!-- Frequencies -->
-    <string-array name="gpu_freqs_avail" translatable="false">
+    <string-array name="hardware_gpu_freqs_avail" translatable="false">
         <item>/gpu_available_frequencies</item>
         <item>/devfreq/available_frequencies</item>
         <item>/scaling_available_frequencies</item>
         <item>/gpu_available_rates</item>
     </string-array>
-    <string-array name="gpu_freqs_cur" translatable="false">
+    <string-array name="hardware_gpu_freqs_cur" translatable="false">
         <item>/devfreq/cur_freq</item>
         <item>/gpu_rate</item>
     </string-array>
-    <string-array name="gpu_freqs_max" translatable="false">
+    <string-array name="hardware_gpu_freqs_max" translatable="false">
         <item>/max_gpuclk</item>
         <item>/devfreq/max_freq</item>
         <item>/scaling_max_freq</item>
         <item>/gpu_cap_rate</item>
     </string-array>
-    <string-array name="gpu_freqs_min" translatable="false">
+    <string-array name="hardware_gpu_freqs_min" translatable="false">
         <item>/min_gpuclk</item>
         <item>/devfreq/min_freq</item>
         <item>/scaling_min_freq</item>
+    </string-array>
+
+    <!-- Display color calibration -->
+    <string-array name="hardware_display_color_calibration_paths" translatable="false">
+        <item>/sys/class/graphics/fb0/rgb</item>
+        <item>/sys/devices/platform/kcal_ctrl.0/kcal</item>
+        <item>/sys/class/misc/gammacontrol/tuner</item>
+        <item>/sys/devices/platform/mdp.524801/kcal</item>
+    </string-array>
+    <string-array name="hardware_display_color_calibration_ctrls" translatable="false">
+        <item>-</item>
+        <item>/sys/devices/platform/kcal_ctrl.0/kcal_ctrl</item>
+        <item>-</item>
+        <item>-</item>
+    </string-array>
+    <string-array name="hardware_display_color_calibration_max" translatable="false">
+        <item>32768</item>
+        <item>255</item>
+        <item>120</item>
+        <item>255</item>
+    </string-array>
+    <string-array name="hardware_display_color_calibration_min" translatable="false">
+        <item>255</item>
+        <item>0</item>
+        <item>0</item>
+        <item>0</item>
+    </string-array>
+    <string-array name="hardware_display_color_calibration_defs" translatable="false">
+        <item>32768</item>
+        <item>max</item>
+        <item>60</item>
+        <item>max</item>
+    </string-array>
+
+    <!-- Display gamma calibration -->
+    <string-array name="hardware_display_gamma_calibration_paths" translatable="false">
+        <item>/sys/devices/virtual/misc/color_tuning/red_v1_offset,/sys/devices/virtual/misc/color_tuning/green_v1_offset,/sys/devices/virtual/misc/color_tuning/blue_v1_offset</item>
+    </string-array>
+    <string-array name="hardware_display_gamma_calibration_descs" translatable="false">
+        <item>@string/hardware_display_gamma_calibration_desc_one</item>
+    </string-array>
+    <string-array name="hardware_display_gamma_calibration_max" translatable="false">
+        <item>40</item>
+    </string-array>
+    <string-array name="hardware_display_gamma_calibration_min" translatable="false">
+        <item>0</item>
     </string-array>
 </resources>
