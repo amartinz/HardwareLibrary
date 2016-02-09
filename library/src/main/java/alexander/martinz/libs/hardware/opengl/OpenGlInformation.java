@@ -27,6 +27,7 @@ import android.opengl.EGLDisplay;
 import android.opengl.EGLSurface;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -79,6 +80,7 @@ public class OpenGlInformation {
 
     @NonNull public static ArrayList<String> getOpenGLESInformation() {
         final ArrayList<String> glesInformation = new ArrayList<>(GL_INFO.length);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             // get a hold of the display and initialize
             final EGLDisplay dpy = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
@@ -118,9 +120,14 @@ public class OpenGlInformation {
             // set up everything, make the context our current context
             EGL14.eglMakeCurrent(dpy, surf, surf, ctx);
 
-            // get the informations we desire
+            // get the information we desire
             for (final int glInfo : GL_INFO) {
-                glesInformation.add(glGetString(glInfo));
+                try {
+                    final String infoString = glGetString(glInfo);
+                    if (!TextUtils.isEmpty(infoString)) {
+                        glesInformation.add(infoString);
+                    }
+                } catch (Exception ignored) { }
             }
 
             // free and destroy everything
@@ -131,7 +138,12 @@ public class OpenGlInformation {
         } else {
             // ... no comment
             for (final int glInfo : GL_INFO) {
-                glesInformation.add(glGetString(glInfo));
+                try {
+                    final String infoString = glGetString(glInfo);
+                    if (!TextUtils.isEmpty(infoString)) {
+                        glesInformation.add(infoString);
+                    }
+                } catch (Exception ignored) { }
             }
         }
 
