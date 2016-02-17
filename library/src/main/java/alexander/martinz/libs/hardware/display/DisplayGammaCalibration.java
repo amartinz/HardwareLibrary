@@ -18,6 +18,7 @@ package alexander.martinz.libs.hardware.display;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.Nullable;
 
 import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.hardware.R;
@@ -105,5 +106,5 @@ public class DisplayGammaCalibration {
         return 1;
     }
 
-    public String[] getPaths(final int control) { return paths; }
+    @Nullable public String[] getPaths(final int control) { return paths; }
 }

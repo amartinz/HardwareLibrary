@@ -18,6 +18,7 @@ package alexander.martinz.libs.hardware.display;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -95,7 +96,7 @@ public class DisplayColorCalibration {
 
     public int getDefValue() { return HwUtils.tryParseInt(def); }
 
-    public String getCurColors() { return HwIoUtils.readOneLine(path); }
+    @Nullable public String getCurColors() { return HwIoUtils.readOneLine(path); }
 
     public void setColors(final String colors) {
         final StringBuilder sb = new StringBuilder();
@@ -106,7 +107,7 @@ public class DisplayColorCalibration {
         RootShell.fireAndForget(sb.toString());
     }
 
-    public String getPath() {
+    @Nullable public String getPath() {
         return path;
     }
 }

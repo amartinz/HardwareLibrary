@@ -88,6 +88,18 @@ public class HwIoUtils {
         return basePath;
     }
 
+    public static boolean canExecute(@Nullable String filePath) {
+        return !TextUtils.isEmpty(filePath) && new File(filePath).canExecute();
+    }
+
+    public static boolean canRead(@Nullable String filePath) {
+        return !TextUtils.isEmpty(filePath) && new File(filePath).canRead();
+    }
+
+    public static boolean canWrite(@Nullable String filePath) {
+        return !TextUtils.isEmpty(filePath) && new File(filePath).canWrite();
+    }
+
     public static boolean fileExists(@Nullable String filePath) {
         return !TextUtils.isEmpty(filePath) && new File(filePath.trim()).exists();
     }
