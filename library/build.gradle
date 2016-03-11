@@ -33,7 +33,7 @@ dependencies {
         try {
             compile project(':ExecutionLibrary')
         } catch (Exception exc2) {
-            compile 'com.github.Evisceration:ExecutionLibrary:-SNAPSHOT'
+            compile 'com.github.Evisceration:ExecutionLibrary:master-SNAPSHOT'
         }
     }
 
