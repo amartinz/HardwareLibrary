@@ -11,7 +11,7 @@ buildscript {
         } catch (Exception ignored) {
             classpath "com.android.tools.build:gradle:1.5.0"
         }
-        classpath 'com.github.dcendents:android-maven-plugin:1.3'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
         classpath 'com.jakewharton.hugo:hugo-plugin:1.2.1'
 
         // NOTE: Do not place your application dependencies here; they belong
