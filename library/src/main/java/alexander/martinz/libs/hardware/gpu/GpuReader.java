@@ -176,6 +176,7 @@ public class GpuReader {
                         gpuInformation.freqMax = availableFreqs.get(availableFreqs.size() - 1);
                         gpuInformation.freqMin = availableFreqs.get(0);
                     }
+                    gpuInformation.freqAvailable = availableFreqs;
                 } else if (TextUtils.equals(getFreqCurPath(context), path)) {
                     gpuInformation.freqCur = HwUtils.tryParseInt(content);
                 }
