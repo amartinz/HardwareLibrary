@@ -303,6 +303,16 @@ public class CpuReader {
                 hasFinished = !cpuInformation.isInitializing();
             }
 
+            if (cpuInformation.freqAvail != null && !cpuInformation.freqAvail.isEmpty()) {
+                if (cpuInformation.freqMin == -1) {
+                    cpuInformation.freqMin = cpuInformation.freqAvail.get(0);
+                }
+                if (cpuInformation.freqMax == -1) {
+                    final int maxPos = cpuInformation.freqAvail.size() - 1;
+                    cpuInformation.freqMax = cpuInformation.freqAvail.get(maxPos);
+                }
+            }
+
             if (listener != null) {
                 listener.onCpuInformation(cpuInformation);
             }
