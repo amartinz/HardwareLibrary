@@ -22,8 +22,10 @@ import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 
-import alexander.martinz.libs.execution.RootCheck;
+import org.json.JSONObject;
+
 import alexander.martinz.libs.execution.BusyBox;
+import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.HwIoUtils;
 import alexander.martinz.libs.hardware.utils.HwUtils;
@@ -178,5 +180,40 @@ public class Device {
 
     public static String getAndroidId(@NonNull Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
+    @Override public String toString() {
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("platform_version", platformVersion);
+            jsonObject.put("platform_id", platformId);
+            jsonObject.put("platform_type", platformType);
+            jsonObject.put("platform_tags", platformTags);
+            jsonObject.put("platform_buildtype", platformBuildType);
+
+            jsonObject.put("vm_library", vmLibrary);
+            jsonObject.put("vm_version", vmVersion);
+
+            jsonObject.put("screen_width", screenWidth);
+            jsonObject.put("screen_height", screenHeight);
+
+            jsonObject.put("device_android_id", androidId);
+            jsonObject.put("device_manufacturer", manufacturer);
+            jsonObject.put("device_model", model);
+            jsonObject.put("device_device", device);
+            jsonObject.put("device_product", product);
+            jsonObject.put("device_board", board);
+            jsonObject.put("device_bootloader", bootloader);
+            jsonObject.put("device_radio", radio);
+
+            jsonObject.put("has_busybox", hasBusyBox);
+            jsonObject.put("has_root", hasRoot);
+            jsonObject.put("su_version", suVersion);
+            jsonObject.put("is_selinux_enforcing", isSELinuxEnforcing);
+            return jsonObject.toString();
+        } catch (Exception ignored) { }
+
+        // something bad happened
+        return super.toString();
     }
 }
