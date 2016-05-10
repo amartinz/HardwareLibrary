@@ -28,11 +28,11 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import alexander.martinz.libs.execution.Command;
-import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.HwIoUtils;
 import alexander.martinz.libs.hardware.utils.HwUtils;
+import at.amartinz.execution.Command;
+import at.amartinz.execution.RootCheck;
 
 public class CpuReader {
     private static final String TAG = CpuReader.class.getSimpleName();

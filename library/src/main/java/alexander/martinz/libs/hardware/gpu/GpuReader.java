@@ -28,12 +28,12 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import alexander.martinz.libs.execution.Command;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.R;
-import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.utils.HwIoUtils;
 import alexander.martinz.libs.hardware.utils.HwUtils;
+import at.amartinz.execution.Command;
+import at.amartinz.execution.RootCheck;
 
 public class GpuReader {
     private static final String TAG = GpuReader.class.getSimpleName();

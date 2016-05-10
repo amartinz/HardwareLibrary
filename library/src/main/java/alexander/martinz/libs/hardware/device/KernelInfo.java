@@ -25,10 +25,10 @@ import android.util.Log;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import alexander.martinz.libs.execution.Command;
-import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.HwIoUtils;
+import at.amartinz.execution.Command;
+import at.amartinz.execution.RootCheck;
 
 /**
  * A class which parses /proc/version and prepares information ready for usage

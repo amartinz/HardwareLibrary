@@ -22,11 +22,11 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.R;
 import alexander.martinz.libs.hardware.utils.HwIoUtils;
 import alexander.martinz.libs.hardware.utils.HwUtils;
+import at.amartinz.execution.RootShell;
 
 public class DisplayColorCalibration {
     public static final String TAG = DisplayColorCalibration.class.getSimpleName();

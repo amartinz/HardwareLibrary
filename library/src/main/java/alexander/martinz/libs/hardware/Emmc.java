@@ -103,10 +103,10 @@ public class Emmc {
         final EmmcBugged emmc = new EmmcBugged(getName(), getMid(), getRev());
         for (final EmmcBugged bugged : EMMC_BUGGED_LIST) {
             if (bugged != null
-                    && TextUtils.equals(emmc.name, bugged.name)
-                    && TextUtils.equals(emmc.mid, bugged.mid)
-                    && !TextUtils.isEmpty(bugged.rev)
-                    && (TextUtils.equals(bugged.rev, "0") || TextUtils.equals(emmc.rev, bugged.rev))) {
+                && TextUtils.equals(emmc.name, bugged.name)
+                && TextUtils.equals(emmc.mid, bugged.mid)
+                && !TextUtils.isEmpty(bugged.rev)
+                && (TextUtils.equals(bugged.rev, "0") || TextUtils.equals(emmc.rev, bugged.rev))) {
                 return bugged.impact == EmmcBugged.IMPACT_BRICK;
             }
         }

@@ -8,9 +8,9 @@ import android.support.annotation.WorkerThread;
 import java.util.ArrayList;
 import java.util.List;
 
-import alexander.martinz.libs.execution.Command;
-import alexander.martinz.libs.execution.NormalShell;
-import alexander.martinz.libs.execution.ShellManager;
+import at.amartinz.execution.Command;
+import at.amartinz.execution.NormalShell;
+import at.amartinz.execution.ShellManager;
 
 /**
  * @author Jared Rummler http://stackoverflow.com/a/32366476

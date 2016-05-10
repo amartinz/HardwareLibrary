@@ -24,11 +24,11 @@ import android.support.annotation.NonNull;
 
 import org.json.JSONObject;
 
-import alexander.martinz.libs.execution.BusyBox;
-import alexander.martinz.libs.execution.RootCheck;
 import alexander.martinz.libs.hardware.Constants;
 import alexander.martinz.libs.hardware.utils.HwIoUtils;
 import alexander.martinz.libs.hardware.utils.HwUtils;
+import at.amartinz.execution.BusyBox;
+import at.amartinz.execution.RootCheck;
 
 public class Device {
     public final String platformVersion;

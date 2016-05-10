@@ -23,7 +23,7 @@ import android.support.annotation.NonNull;
 
 /**
  * Created by amartinz on 27.04.16.
- *
+ * <p/>
  * UUID's obtained from <a href="http://dashif.org/identifiers/protection/">DASH Industry Forum</a>.
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)

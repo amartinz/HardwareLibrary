@@ -22,7 +22,7 @@ import android.text.TextUtils;
 
 import org.json.JSONObject;
 
-import alexander.martinz.libs.execution.NormalShell;
+import at.amartinz.execution.NormalShell;
 
 /**
  * Created by amartinz on 28.04.16.

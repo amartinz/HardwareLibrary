@@ -20,10 +20,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.Nullable;
 
-import alexander.martinz.libs.execution.RootShell;
 import alexander.martinz.libs.hardware.R;
 import alexander.martinz.libs.hardware.utils.HwIoUtils;
 import alexander.martinz.libs.hardware.utils.HwUtils;
+import at.amartinz.execution.RootShell;
 
 public class DisplayGammaCalibration {
     public static final String TAG = DisplayGammaCalibration.class.getSimpleName();
