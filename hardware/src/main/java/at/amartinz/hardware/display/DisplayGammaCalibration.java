@@ -28,7 +28,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.Nullable;
 
-import alexander.martinz.libs.hardware.R;
+import at.amartinz.hardware.R;
 import at.amartinz.hardware.utils.HwIoUtils;
 import at.amartinz.hardware.utils.HwUtils;
 import at.amartinz.execution.RootShell;

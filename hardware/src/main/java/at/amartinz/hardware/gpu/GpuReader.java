@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import at.amartinz.hardware.Constants;
-import alexander.martinz.libs.hardware.R;
+import at.amartinz.hardware.R;
 import at.amartinz.hardware.utils.HwIoUtils;
 import at.amartinz.hardware.utils.HwUtils;
 import at.amartinz.execution.Command;

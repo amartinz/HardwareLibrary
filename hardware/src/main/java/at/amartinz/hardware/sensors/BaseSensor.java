@@ -43,7 +43,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import at.amartinz.hardware.Constants;
-import alexander.martinz.libs.hardware.R;
+import at.amartinz.hardware.R;
 
 public abstract class BaseSensor extends FrameLayout implements SensorEventListener {
     private SensorManager mSensorManager;

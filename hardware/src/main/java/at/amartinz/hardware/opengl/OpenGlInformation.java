@@ -40,7 +40,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import at.amartinz.hardware.Constants;
-import alexander.martinz.libs.hardware.R;
+import at.amartinz.hardware.R;
 
 import static android.opengl.GLES20.GL_EXTENSIONS;
 import static android.opengl.GLES20.GL_RENDERER;

@@ -31,7 +31,7 @@ import android.hardware.SensorEvent;
 import android.os.Build;
 import android.widget.TextView;
 
-import alexander.martinz.libs.hardware.R;
+import at.amartinz.hardware.R;
 import at.amartinz.hardware.sensors.BaseSensor;
 
 /**

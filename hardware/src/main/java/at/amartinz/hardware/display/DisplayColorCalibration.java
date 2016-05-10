@@ -31,7 +31,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import at.amartinz.hardware.Constants;
-import alexander.martinz.libs.hardware.R;
+import at.amartinz.hardware.R;
 import at.amartinz.hardware.utils.HwIoUtils;
 import at.amartinz.hardware.utils.HwUtils;
 import at.amartinz.execution.RootShell;

@@ -29,7 +29,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.widget.TextView;
 
-import alexander.martinz.libs.hardware.R;
+import at.amartinz.hardware.R;
 import at.amartinz.hardware.sensors.BaseSensor;
 
 public class GyroscopeSensor extends BaseSensor {
