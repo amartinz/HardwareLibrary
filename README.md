@@ -1,5 +1,7 @@
 # HardwareLibrary
 
+[ ![Download](https://api.bintray.com/packages/evisceration/maven/hardware-library/images/download.svg) ](https://bintray.com/evisceration/maven/hardware-library/_latestVersion)
+
 TODO: write a proper readme
 
 ## Download
