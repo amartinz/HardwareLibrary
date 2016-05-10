@@ -57,7 +57,7 @@ dependencies {
         try {
             compile project(':ExecutionLibrary')
         } catch (Exception exc2) {
-            compile 'com.github.Evisceration:ExecutionLibrary:master-SNAPSHOT'
+            compile 'at.amartinz:execution:1.0.0'
         }
     }
 
