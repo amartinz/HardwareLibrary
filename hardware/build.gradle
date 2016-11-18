@@ -26,14 +26,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.hugo'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion targetSdk
+    buildToolsVersion buildTools
 
     resourcePrefix 'hardware_'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion targetSdk
     }
     buildTypes {
         release {
