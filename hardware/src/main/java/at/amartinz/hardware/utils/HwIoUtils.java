@@ -213,6 +213,40 @@ public class HwIoUtils {
         return ((content != null) ? content.trim() : null);
     }
 
+	/**
+     * Read one line from a file with root credentials.
+     * Use blocking reading.
+     * @param Path of the file to read
+     * @return Line read.
+     */
+    @WorkerThread @Nullable public static String readOneLineRoot(final String path) {
+        final String content = readFileInternalRoot(path, true);
+        return ((content != null) ? content.trim() : null);
+    }
+
+	/**
+	 * Read file with root permissions.
+     * @param path Path of the file to read
+     * @param oneLine read only one line if true
+     * @return content read
+     */
+    @WorkerThread
+    @Nullable
+    public static String readFileInternalRoot(@Nullable final String path, boolean oneLine) {
+        if (TextUtils.isEmpty(path) || !RootCheck.isRooted()) {
+            return null;
+        }
+        String output = null;
+        if(oneLine)
+            output = RootShell.fireAndBlockStringNewline(
+                    new Command(String.format("head -n 1 %s", path)));
+        else
+            output = RootShell.fireAndBlockStringNewline(
+                    new Command(String.format("cat %s", path)));
+
+        return output;
+    }
+
     @WorkerThread @Nullable private static String readFileInternal(final String path, final boolean oneLine) {
         final File f = new File(path);
         if (f.canRead()) {

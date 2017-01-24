@@ -104,7 +104,7 @@ public class DisplayColorCalibration {
 
     public int getDefValue() { return HwUtils.tryParseInt(def); }
 
-    @Nullable public String getCurColors() { return HwIoUtils.readOneLine(path); }
+    @Nullable public String getCurColors() { return HwIoUtils.readOneLineRoot(path); }
 
     public void setColors(final String colors) {
         final StringBuilder sb = new StringBuilder();
