@@ -60,42 +60,42 @@ public class GpuReader {
 
         gpuInformation.freqAvailable = readAvailableFrequencies(context);
         if (gpuInformation.freqAvailable.isEmpty()) {
-            gpuInformation.freqMax = Constants.INVALID;
-            gpuInformation.freqMin = Constants.INVALID;
+            gpuInformation.freqMax = Constants.INSTANCE.getINVALID();
+            gpuInformation.freqMin = Constants.INSTANCE.getINVALID();
         } else {
             gpuInformation.freqMax = gpuInformation.freqAvailable.get(gpuInformation.freqAvailable.size() - 1);
             gpuInformation.freqMin = gpuInformation.freqAvailable.get(0);
         }
 
-        gpuInformation.freqCur = HwIoUtils.readSysfsIntValue(getFreqCurPath(context));
+        gpuInformation.freqCur = HwIoUtils.INSTANCE.readSysfsIntValue(getFreqCurPath(context));
 
         return gpuInformation;
     }
 
-    @Nullable public static String getBasePath(Context context) {
+    public static String getBasePath(Context context) {
         if (basePath == null) {
-            basePath = HwIoUtils.getPath(context, R.array.hardware_gpu_base);
+            basePath = HwIoUtils.INSTANCE.getPath(context, R.array.hardware_gpu_base);
         }
         return basePath;
     }
 
-    @Nullable public static String getFreqAvailPath(Context context) {
+    public static String getFreqAvailPath(Context context) {
         if (freqAvailPath == null) {
-            freqAvailPath = HwIoUtils.getPath(context, R.array.hardware_gpu_freqs_avail, getBasePath(context));
+            freqAvailPath = HwIoUtils.INSTANCE.getPath(context, R.array.hardware_gpu_freqs_avail, getBasePath(context));
         }
         return freqAvailPath;
     }
 
-    @Nullable public static String getFreqCurPath(Context context) {
+    public static String getFreqCurPath(Context context) {
         if (freqCurPath == null) {
-            freqCurPath = HwIoUtils.getPath(context, R.array.hardware_gpu_freqs_cur, getBasePath(context));
+            freqCurPath = HwIoUtils.INSTANCE.getPath(context, R.array.hardware_gpu_freqs_cur, getBasePath(context));
         }
         return freqCurPath;
     }
 
     @NonNull private static ArrayList<Integer> readAvailableFrequencies(Context context) {
         final String freqAvailPath = getFreqAvailPath(context);
-        return readAvailableFrequencies(HwIoUtils.readFile(freqAvailPath));
+        return readAvailableFrequencies(HwIoUtils.INSTANCE.readFile(freqAvailPath));
     }
 
     @NonNull private static ArrayList<Integer> readAvailableFrequencies(final String freqString) {
@@ -103,7 +103,7 @@ public class GpuReader {
         if (!TextUtils.isEmpty(freqString)) {
             final String[] splitted = freqString.split(" ");
             for (final String s : splitted) {
-                availableFreqs.add(HwUtils.tryParseInt(s));
+                availableFreqs.add(HwUtils.INSTANCE.tryParseInt(s));
             }
         }
         if (!availableFreqs.isEmpty()) {
@@ -128,35 +128,35 @@ public class GpuReader {
         @Override public void run() {
             gpuInformation = getGpuInformationBlocking(context);
             // if the gpu information contains an invalid value AND we are not using root, finish
-            if (gpuInformation.isValid() || !RootCheck.isRooted()) {
+            if (gpuInformation.isValid() || !RootCheck.INSTANCE.isRooted()) {
                 hasFinished = true;
             } else {
                 gpuInformation.resetInvalid();
             }
 
             while (!hasFinished) {
-                if (gpuInformation.freqCur == Constants.NOT_INITIALIZED) {
-                    Command cmd = HwIoUtils.readFileRoot(getFreqCurPath(context), readFileListener);
+                if (gpuInformation.freqCur == Constants.INSTANCE.getNOT_INITIALIZED()) {
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(getFreqCurPath(context), readFileListener);
                     if (cmd == null) {
-                        if (Constants.DEBUG) {
+                        if (Constants.INSTANCE.getDEBUG()) {
                             Log.e(TAG, "Could not read file with root!");
                         }
                         break;
                     } else {
-                        gpuInformation.freqCur = Constants.INITIALIZATION_STARTED;
+                        gpuInformation.freqCur = Constants.INSTANCE.getINITIALIZATION_STARTED();
                     }
                 }
-                if ((gpuInformation.freqMax == Constants.NOT_INITIALIZED) ||
-                    (gpuInformation.freqMin == Constants.NOT_INITIALIZED)) {
-                    Command cmd = HwIoUtils.readFileRoot(getFreqAvailPath(context), readFileListener);
+                if ((gpuInformation.freqMax == Constants.INSTANCE.getNOT_INITIALIZED()) ||
+                    (gpuInformation.freqMin == Constants.INSTANCE.getNOT_INITIALIZED())) {
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(getFreqAvailPath(context), readFileListener);
                     if (cmd == null) {
-                        if (Constants.DEBUG) {
+                        if (Constants.INSTANCE.getDEBUG()) {
                             Log.e(TAG, "Could not read file with root!");
                         }
                         break;
                     } else {
-                        gpuInformation.freqMin = Constants.INITIALIZATION_STARTED;
-                        gpuInformation.freqMax = Constants.INITIALIZATION_STARTED;
+                        gpuInformation.freqMin = Constants.INSTANCE.getINITIALIZATION_STARTED();
+                        gpuInformation.freqMax = Constants.INSTANCE.getINITIALIZATION_STARTED();
                     }
                 }
 
@@ -177,15 +177,15 @@ public class GpuReader {
                 if (TextUtils.equals(getFreqAvailPath(context), path)) {
                     final ArrayList<Integer> availableFreqs = readAvailableFrequencies(content);
                     if (availableFreqs.isEmpty()) {
-                        gpuInformation.freqMax = Constants.INVALID;
-                        gpuInformation.freqMin = Constants.INVALID;
+                        gpuInformation.freqMax = Constants.INSTANCE.getINVALID();
+                        gpuInformation.freqMin = Constants.INSTANCE.getINVALID();
                     } else {
                         gpuInformation.freqMax = availableFreqs.get(availableFreqs.size() - 1);
                         gpuInformation.freqMin = availableFreqs.get(0);
                     }
                     gpuInformation.freqAvailable = availableFreqs;
                 } else if (TextUtils.equals(getFreqCurPath(context), path)) {
-                    gpuInformation.freqCur = HwUtils.tryParseInt(content);
+                    gpuInformation.freqCur = HwUtils.INSTANCE.tryParseInt(content);
                 }
             }
         };

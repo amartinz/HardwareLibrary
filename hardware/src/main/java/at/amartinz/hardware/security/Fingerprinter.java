@@ -96,19 +96,19 @@ public class Fingerprinter {
 
     public int hasFingerprintsSetup() {
         if (!fingerprintManager.isHardwareDetected()) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.d(TAG, "No fingerprint hardware detected!");
             }
             return SETUP_NO_HARDWARE;
         }
         if (!keyguardManager.isKeyguardSecure()) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.d(TAG, "No secure lock screen set up!");
             }
             return SETUP_NO_SECURE_LOCK_SCREEN;
         }
         if (!fingerprintManager.hasEnrolledFingerprints()) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.d(TAG, "User did not setup fingerprints!");
             }
             return SETUP_NO_FINGERPRINTS;

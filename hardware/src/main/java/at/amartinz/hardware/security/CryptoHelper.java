@@ -77,7 +77,7 @@ import at.amartinz.hardware.Constants;
                 keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
                 keyStore.load(null);
             } catch (Exception exc) {
-                if (Constants.DEBUG) {
+                if (Constants.INSTANCE.getDEBUG()) {
                     Log.e(TAG, "Could not load key store!");
                 }
             }
@@ -111,12 +111,12 @@ import at.amartinz.hardware.Constants;
                 cipher.init(opmode, secretKey);
             }
         } catch (KeyPermanentlyInvalidatedException exc) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.e(TAG, "Could not init cipher, because key is permanently invalidated", exc);
             }
             return null;
         } catch (InvalidAlgorithmParameterException | InvalidKeyException ike) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.e(TAG, "Could not init cipher", ike);
             }
             return null;
@@ -129,7 +129,7 @@ import at.amartinz.hardware.Constants;
         try {
             return Cipher.getInstance(String.format("%s/%s/%s", DEFAULT_ALGORITHM, DEFAULT_BLOCK_MODE, DEFAULT_PADDING));
         } catch (NoSuchAlgorithmException | NoSuchPaddingException exc) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.e(TAG, "Could not create cipher", exc);
             }
         }
@@ -153,7 +153,7 @@ import at.amartinz.hardware.Constants;
         try {
             return (SecretKey) keyStore.getKey(keyName, null);
         } catch (Exception exc) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.e(TAG, "Could not get key from key store", exc);
             }
         }
@@ -171,7 +171,7 @@ import at.amartinz.hardware.Constants;
                     .build());
             return keyGen.generateKey();
         } catch (Exception exc) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.e(TAG, "Could not create key", exc);
             }
         }

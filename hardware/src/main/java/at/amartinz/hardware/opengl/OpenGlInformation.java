@@ -79,7 +79,7 @@ public class OpenGlInformation {
             return false;
         }
         final int glEsVersion = ((info.reqGlEsVersion & 0xffff0000) >> 16);
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             Log.v(TAG, String.format("glEsVersion: %s (%s)", glEsVersion, info.getGlEsVersion()));
         }
         return (glEsVersion >= 2);
@@ -106,7 +106,7 @@ public class OpenGlInformation {
             final int[] numConfig = new int[1];
             EGL14.eglChooseConfig(dpy, configAttr, 0, configs, 0, 1, numConfig, 0);
             if (numConfig[0] == 0) {
-                if (Constants.DEBUG) {
+                if (Constants.INSTANCE.getDEBUG()) {
                     Log.w("getOpenGLESInformation", "no config found! PANIC!");
                 }
             }

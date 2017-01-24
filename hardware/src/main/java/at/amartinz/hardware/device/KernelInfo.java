@@ -63,24 +63,24 @@ public class KernelInfo {
     }
 
     @WorkerThread public static void feedWithInformationBlocking(final Device.KernelInfoListener kernelInfoListener) {
-        final String content = HwIoUtils.readFile(PATH_PROC_VERSION);
+        final String content = HwIoUtils.INSTANCE.readFile(PATH_PROC_VERSION);
         if (!TextUtils.isEmpty(content)) {
             feedWithInformation(content, kernelInfoListener);
             return;
         }
 
         // If we could not read the file and we do not have root, then we can not read it...
-        if (!RootCheck.isRooted()) {
+        if (!RootCheck.INSTANCE.isRooted()) {
             return;
         }
 
-        final Command cmd = HwIoUtils.readFileRoot(PATH_PROC_VERSION, new HwIoUtils.ReadFileListener() {
+        final Command cmd = HwIoUtils.INSTANCE.readFileRoot(PATH_PROC_VERSION, new HwIoUtils.ReadFileListener() {
             @Override public void onFileRead(String path, String content) {
                 feedWithInformation(content, kernelInfoListener);
             }
         });
         if (cmd == null) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.e(TAG, "Could not read file with root!");
             }
         }
@@ -109,7 +109,7 @@ public class KernelInfo {
 
         final Matcher m = Pattern.compile(PROC_VERSION_REGEX).matcher(content);
         if (!m.matches() || m.groupCount() < 6) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.e(TAG, "Regex does not match!");
             }
             return;

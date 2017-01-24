@@ -22,23 +22,23 @@
  * THE SOFTWARE.
  */
 
-package at.amartinz.hardware;
+package at.amartinz.hardware
 
-public class Constants {
-    public static boolean DEBUG;
+object Constants {
+    var DEBUG: Boolean = false
 
-    public static final int API_NOT_SUPPORTED = -100;
+    val API_NOT_SUPPORTED = -100
 
-    public static final int NOT_INITIALIZED = -3;
-    public static final int INITIALIZATION_STARTED = -2;
-    public static final int INVALID = -1;
+    val NOT_INITIALIZED = -3
+    val INITIALIZATION_STARTED = -2
+    val INVALID = -1
 
-    public static final String NOT_INITIALIZED_STR = "---3";
-    public static final String INITIALIZATION_STARTED_STR = "---2";
-    public static final String INVALID_STR = "---1";
+    val NOT_INITIALIZED_STR = "---3"
+    val INITIALIZATION_STARTED_STR = "---2"
+    val INVALID_STR = "---1"
 
-    public static final String UNAVAILABLE = "Unavailable";
-    public static final String UNKNOWN = "Unknown";
+    val UNAVAILABLE = "Unavailable"
+    val UNKNOWN = "Unknown"
 
-    public static final String[] ENABLED_STATES = { "Y", "TRUE", "1", "255" };
+    val ENABLED_STATES = arrayOf("Y", "TRUE", "1", "255")
 }

@@ -69,7 +69,7 @@ public class MemoryInfo {
         final MemoryInfo memoryInfo = new MemoryInfo();
         memoryInfo.type = type;
 
-        final String input = HwIoUtils.readFile("/proc/meminfo");
+        final String input = HwIoUtils.INSTANCE.readFile("/proc/meminfo");
         if (!TextUtils.isEmpty(input)) {
             final String[] parts = input.split("\n");
             for (final String s : parts) {
@@ -122,20 +122,20 @@ public class MemoryInfo {
 
             if (content.startsWith(MEMTOTAL)) {
                 content = content.replace(MEMTOTAL, "").trim();
-                total = HwUtils.tryParseLong(content);
+                total = HwUtils.INSTANCE.tryParseLong(content);
                 return total;
             } else if (content.startsWith(MEMCACHED)) {
                 content = content.replace(MEMCACHED, "").trim();
-                cached = HwUtils.tryParseLong(content);
+                cached = HwUtils.INSTANCE.tryParseLong(content);
                 return cached;
             } else if (content.startsWith(MEMFREE)) {
                 content = content.replace(MEMFREE, "").trim();
-                free = HwUtils.tryParseLong(content);
+                free = HwUtils.INSTANCE.tryParseLong(content);
                 return free;
             }
         }
 
-        return Constants.INVALID;
+        return Constants.INSTANCE.getINVALID();
     }
 
 }

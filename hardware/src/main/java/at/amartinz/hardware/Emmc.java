@@ -70,28 +70,28 @@ public class Emmc {
 
     @Nullable public String getCid() {
         if (cid == null) {
-            cid = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/cid");
+            cid = HwIoUtils.INSTANCE.readOneLine("/sys/class/block/mmcblk0/device/cid");
         }
         return cid;
     }
 
     @Nullable public String getDate() {
         if (date == null) {
-            date = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/date");
+            date = HwIoUtils.INSTANCE.readOneLine("/sys/class/block/mmcblk0/device/date");
         }
         return date;
     }
 
     @Nullable public String getMid() {
         if (mid == null) {
-            mid = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/manfid");
+            mid = HwIoUtils.INSTANCE.readOneLine("/sys/class/block/mmcblk0/device/manfid");
         }
         return mid;
     }
 
     @Nullable public String getName() {
         if (name == null) {
-            name = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/name");
+            name = HwIoUtils.INSTANCE.readOneLine("/sys/class/block/mmcblk0/device/name");
         }
         return name;
     }

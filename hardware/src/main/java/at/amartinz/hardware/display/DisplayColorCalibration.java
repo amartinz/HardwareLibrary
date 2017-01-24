@@ -56,7 +56,7 @@ public class DisplayColorCalibration {
         final int length = paths.length;
         for (int i = 0; i < length; i++) {
             // if the file exists, set up the values
-            if (HwIoUtils.fileExists(paths[i])) {
+            if (HwIoUtils.INSTANCE.fileExists(paths[i])) {
                 // our existing path
                 path = paths[i];
 
@@ -66,19 +66,19 @@ public class DisplayColorCalibration {
                     // check if we disabled it
                     || TextUtils.equals(ctrl, "-")
                     // check if it exists
-                    || !HwIoUtils.fileExists(ctrl)) {
+                    || !HwIoUtils.INSTANCE.fileExists(ctrl)) {
                     ctrl = null;
                 }
 
                 // maximum
-                max = HwUtils.tryParseInt(maxs[i]);
-                if (Constants.DEBUG) {
+                max = HwUtils.INSTANCE.tryParseInt(maxs[i]);
+                if (Constants.INSTANCE.getDEBUG()) {
                     Log.i(TAG, String.format("max --> %s", max));
                 }
 
                 // minimum
-                min = HwUtils.tryParseInt(mins[i]);
-                if (Constants.DEBUG) {
+                min = HwUtils.INSTANCE.tryParseInt(mins[i]);
+                if (Constants.INSTANCE.getDEBUG()) {
                     Log.i(TAG, String.format("min --> %s", min));
                 }
 
@@ -96,15 +96,15 @@ public class DisplayColorCalibration {
         }
     }
 
-    public boolean isSupported() { return HwIoUtils.fileExists(path); }
+    public boolean isSupported() { return HwIoUtils.INSTANCE.fileExists(path); }
 
     public int getMaxValue() { return max; }
 
     public int getMinValue() { return min; }
 
-    public int getDefValue() { return HwUtils.tryParseInt(def); }
+    public int getDefValue() { return HwUtils.INSTANCE.tryParseInt(def); }
 
-    @Nullable public String getCurColors() { return HwIoUtils.readOneLineRoot(path); }
+    @Nullable public String getCurColors() { return HwIoUtils.INSTANCE.readOneLineRoot(path); }
 
     public void setColors(final String colors) {
         final StringBuilder sb = new StringBuilder();
@@ -112,7 +112,7 @@ public class DisplayColorCalibration {
         if (!TextUtils.isEmpty(ctrl)) {
             sb.append(String.format("echo \"%s\" > %s;", "1", ctrl));
         }
-        RootShell.fireAndForget(sb.toString());
+        RootShell.Companion.fireAndForget(sb.toString());
     }
 
     @Nullable public String getPath() {

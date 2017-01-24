@@ -94,7 +94,7 @@ public class KnoxInformation {
     }
 
     @Nullable private static String getProp(String property, String defaultValue) {
-        final String result = NormalShell.fireAndBlockString(getPropCommand(property));
+        final String result = NormalShell.Companion.fireAndBlockString(getPropCommand(property));
         if (TextUtils.isEmpty(result)) {
             return defaultValue;
         }

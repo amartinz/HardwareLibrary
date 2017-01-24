@@ -56,7 +56,7 @@ public class DisplayGammaCalibration {
             boolean exists = false;
             for (final String path : splitted) {
                 // if the file exists, set up the values
-                if (HwIoUtils.fileExists(path)) {
+                if (HwIoUtils.INSTANCE.fileExists(path)) {
                     // and get out of here to continue
                     exists = true;
                     break;
@@ -67,8 +67,8 @@ public class DisplayGammaCalibration {
             if (exists) {
                 this.paths = splitted;
                 // maximum and minimum
-                max = HwUtils.tryParseInt(maxs[i]);
-                min = HwUtils.tryParseInt(mins[i]);
+                max = HwUtils.INSTANCE.tryParseInt(maxs[i]);
+                min = HwUtils.INSTANCE.tryParseInt(mins[i]);
                 // descriptors
                 descriptors = descs[i].split(",");
                 // get out of here finally
@@ -77,7 +77,7 @@ public class DisplayGammaCalibration {
         }
     }
 
-    public boolean isSupported() { return paths != null && HwIoUtils.fileExists(paths[0]); }
+    public boolean isSupported() { return paths != null && HwIoUtils.INSTANCE.fileExists(paths[0]); }
 
     public int getMaxValue(final int control) { return max; }
 
@@ -89,7 +89,7 @@ public class DisplayGammaCalibration {
             if (i > 0) {
                 sb.append(" ");
             }
-            sb.append(HwIoUtils.readOneLine(paths[i]));
+            sb.append(HwIoUtils.INSTANCE.readOneLine(paths[i]));
         }
         return sb.toString();
     }
@@ -104,7 +104,7 @@ public class DisplayGammaCalibration {
         for (int i = 0; i < paths.length; i++) {
             sb.append(String.format("echo \"%s\" > %s;", split[i], paths[i]));
         }
-        RootShell.fireAndForget(sb.toString());
+        RootShell.Companion.fireAndForget(sb.toString());
     }
 
     public String[] getDescriptors() { return descriptors; }

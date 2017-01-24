@@ -90,7 +90,7 @@ public class Device {
         platformId = Build.DISPLAY;
         platformType = Build.VERSION.CODENAME + " " + Build.TYPE;
         platformTags = Build.TAGS;
-        platformBuildType = HwUtils.getDate(Build.TIME);
+        platformBuildType = HwUtils.INSTANCE.getDate(Build.TIME);
 
         vmVersion = System.getProperty("java.vm.version", "-");
         vmLibrary = getRuntime();
@@ -123,11 +123,11 @@ public class Device {
     }
 
     public Device update() {
-        hasRoot = RootCheck.isRooted();
-        suVersion = RootCheck.getSuVersion();
+        hasRoot = RootCheck.INSTANCE.isRooted();
+        suVersion = RootCheck.INSTANCE.getSuVersion(false);
 
         // check busybox
-        hasBusyBox = BusyBox.isAvailable();
+        hasBusyBox = BusyBox.INSTANCE.isAvailable(mContext);
 
         // selinux can be toggled when in development mode, so do not cache it
         isSELinuxEnforcing = isSELinuxEnforcing(); // ehm, alright, if you say so...
@@ -146,7 +146,7 @@ public class Device {
         } else if (isDalvik) {
             runtime = "Dalvik";
         } else {
-            runtime = Constants.UNAVAILABLE;
+            runtime = Constants.INSTANCE.getUNAVAILABLE();
         }
         tmp = String.format("%s (%s)", runtime, tmp);
 
@@ -172,13 +172,13 @@ public class Device {
     private boolean isSELinuxEnforcing() {
         // We know about a 4.2 release, which has enforcing selinux
         if (Build.VERSION.SDK_INT >= 17) {
-            final int enforcingState = HwIoUtils.readSysfsIntValue("/sys/fs/selinux/enforce");
+            final int enforcingState = HwIoUtils.INSTANCE.readSysfsIntValue("/sys/fs/selinux/enforce");
 
             // 4.4+ builds (should) be enforcing by default
-            if (enforcingState == Constants.INVALID) {
+            if (enforcingState == Constants.INSTANCE.getINVALID()) {
                 isSELinuxEnforcing = (Build.VERSION.SDK_INT >= 19);
             } else {
-                isSELinuxEnforcing = HwUtils.isEnabled(Integer.toString(enforcingState), false);
+                isSELinuxEnforcing = HwUtils.INSTANCE.isEnabled(Integer.toString(enforcingState), false);
             }
         }
 

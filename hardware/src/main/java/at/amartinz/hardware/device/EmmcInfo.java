@@ -60,10 +60,10 @@ public class EmmcInfo {
     }
 
     private EmmcInfo() {
-        cid = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/cid");
-        date = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/date");
-        mid = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/manfid");
-        name = HwIoUtils.readOneLine("/sys/class/block/mmcblk0/device/name");
+        cid = HwIoUtils.INSTANCE.readOneLine("/sys/class/block/mmcblk0/device/cid");
+        date = HwIoUtils.INSTANCE.readOneLine("/sys/class/block/mmcblk0/device/date");
+        mid = HwIoUtils.INSTANCE.readOneLine("/sys/class/block/mmcblk0/device/manfid");
+        name = HwIoUtils.INSTANCE.readOneLine("/sys/class/block/mmcblk0/device/name");
         rev = ((cid != null && cid.length() > 20) ? cid.substring(18, 20) : "-");
     }
 

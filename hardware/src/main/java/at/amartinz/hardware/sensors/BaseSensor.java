@@ -197,7 +197,7 @@ public abstract class BaseSensor extends FrameLayout implements SensorEventListe
     }
 
     @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        if (Constants.DEBUG) {
+        if (Constants.INSTANCE.getDEBUG()) {
             Log.d(this.getClass().getSimpleName(),
                     String.format("onAccuracyChanged: %s (%s), %s", sensor.getName(), sensor.getVendor(), accuracy));
         }

@@ -69,7 +69,7 @@ public class IoScheduler {
      */
     @WorkerThread @Nullable public static String[] getAvailableIoSchedulers() {
         String[] schedulers = null;
-        final String[] aux = HwIoUtils.readStringArray(IO_SCHEDULER_PATH[0]);
+        final String[] aux = HwIoUtils.INSTANCE.readStringArray(IO_SCHEDULER_PATH[0]);
         if (aux != null) {
             schedulers = new String[aux.length];
             for (int i = 0; i < aux.length; i++) {
@@ -84,7 +84,7 @@ public class IoScheduler {
     }
 
     @WorkerThread @Nullable public static IoScheduler getIoSchedulerBlocking() {
-        final String content = RootShell.fireAndBlockString(String.format("cat %s", IO_SCHEDULER_PATH[0]));
+        final String content = RootShell.Companion.fireAndBlockString(String.format("cat %s", IO_SCHEDULER_PATH[0]));
         if (TextUtils.isEmpty(content)) {
             return null;
         }
@@ -96,16 +96,16 @@ public class IoScheduler {
     }
 
     public static void getIoScheduler(final IoSchedulerListener listener, final Handler handler) {
-        final String content = HwIoUtils.readFile(IO_SCHEDULER_PATH[0]);
+        final String content = HwIoUtils.INSTANCE.readFile(IO_SCHEDULER_PATH[0]);
         if (!TextUtils.isEmpty(content)) {
             processIoSchedulerContent(content, listener, handler);
             return;
         }
 
-        final RootShell rootShell = ShellManager.get().getRootShell();
+        final RootShell rootShell = ShellManager.Companion.get().getRootShell();
         if (rootShell != null) {
             final StringBuilder outputCollector = new StringBuilder();
-            final Command command = new Command(String.format("cat %s", IO_SCHEDULER_PATH[0])) {
+            final Command command = new Command(new String[]{String.format("cat %s", IO_SCHEDULER_PATH[0])}, 0, 5000) {
                 @Override public void onCommandOutput(int id, String line) {
                     outputCollector.append(line);
                     super.onCommandOutput(id, line);

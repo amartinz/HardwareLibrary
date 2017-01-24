@@ -81,24 +81,24 @@ public class ProcessorInfo {
     }
 
     @WorkerThread public static void feedWithInformationBlocking(final Device.ProcessorInfoListener procInfoListener) {
-        final String content = HwIoUtils.readFile(PATH_PROC_CPU);
+        final String content = HwIoUtils.INSTANCE.readFile(PATH_PROC_CPU);
         if (!TextUtils.isEmpty(content)) {
             feedWithInformation(content, procInfoListener);
             return;
         }
 
         // If we could not read the file and we do not have root, then we can not read it...
-        if (!RootCheck.isRooted()) {
+        if (!RootCheck.INSTANCE.isRooted()) {
             return;
         }
 
-        final Command cmd = HwIoUtils.readFileRoot(PATH_PROC_CPU, new HwIoUtils.ReadFileListener() {
+        final Command cmd = HwIoUtils.INSTANCE.readFileRoot(PATH_PROC_CPU, new HwIoUtils.ReadFileListener() {
             @Override public void onFileRead(String path, String content) {
                 feedWithInformation(content, procInfoListener);
             }
         });
         if (cmd == null) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.e(TAG, "Could not read file with root!");
             }
         }

@@ -76,7 +76,7 @@ public class CpuReader {
 
         // some octa core cpus are buggy and need special treatment
         if (cpuInformation.isOctaCore) {
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.i(TAG, "using special octa core treatment");
             }
             int cpuToReadFrom = 0;
@@ -86,7 +86,7 @@ public class CpuReader {
                     break;
                 }
             }
-            if (Constants.DEBUG) {
+            if (Constants.INSTANCE.getDEBUG()) {
                 Log.v(TAG, String.format("Using cpu%s to read from", cpuToReadFrom));
             }
 
@@ -113,12 +113,12 @@ public class CpuReader {
     }
 
     private static int readTemperature() {
-        return HwIoUtils.readSysfsIntValue(PATH_TEMPERATURE);
+        return HwIoUtils.INSTANCE.readSysfsIntValue(PATH_TEMPERATURE);
     }
 
     public static int readAvailableCores() {
         // example value: 0-3 -> 0, 1, 2, 3 -> we have 4 cores
-        return readAvailableCores(HwIoUtils.readFile(PATH_COUNT));
+        return readAvailableCores(HwIoUtils.INSTANCE.readFile(PATH_COUNT));
     }
 
     private static int readAvailableCores(final String rawString) {
@@ -126,61 +126,61 @@ public class CpuReader {
             final int length = rawString.length();
             // 0-3 -> 3
             final String coreCountString = rawString.substring(length - 1, length);
-            final Integer coreCount = HwUtils.tryParseIntRaw(coreCountString);
+            final Integer coreCount = HwUtils.INSTANCE.tryParseIntRaw(coreCountString);
             if (coreCount != null) {
                 // 3 + 1 = 4 cores (yes, i got these math skills in school)
                 return (coreCount + 1);
-            } else if (Constants.DEBUG) {
+            } else if (Constants.INSTANCE.getDEBUG()) {
                 Log.w(TAG, "Could not get core count!");
             }
         }
-        return Constants.INVALID;
+        return Constants.INSTANCE.getINVALID();
     }
 
     @NonNull public static List<Integer> readFreqAvail(int cpuCore) {
-        final String freqString = HwIoUtils.readFile(getPathCoreFreqAvail(cpuCore));
+        final String freqString = HwIoUtils.INSTANCE.readFile(getPathCoreFreqAvail(cpuCore));
         if (TextUtils.isEmpty(freqString)) {
             return Collections.emptyList();
         }
-        return HwUtils.stringToListInteger(freqString);
+        return HwUtils.INSTANCE.stringToListInteger(freqString);
     }
 
     @NonNull private static List<Integer> readFreqAvail(@Nullable final String freqString) {
         if (TextUtils.isEmpty(freqString)) {
             return Collections.emptyList();
         }
-        return HwUtils.stringToListInteger(freqString);
+        return HwUtils.INSTANCE.stringToListInteger(freqString);
     }
 
     @NonNull public static List<String> readGovAvail(int cpuCore) {
-        final String freqString = HwIoUtils.readFile(getPathCoreGovAvail(cpuCore));
+        final String freqString = HwIoUtils.INSTANCE.readFile(getPathCoreGovAvail(cpuCore));
         if (TextUtils.isEmpty(freqString)) {
             return Collections.emptyList();
         }
-        return HwUtils.stringToList(freqString);
+        return HwUtils.INSTANCE.stringToList(freqString);
     }
 
     @NonNull private static List<String> readGovAvail(@Nullable final String govString) {
         if (TextUtils.isEmpty(govString)) {
             return Collections.emptyList();
         }
-        return HwUtils.stringToList(govString);
+        return HwUtils.INSTANCE.stringToList(govString);
     }
 
     private static int readFreqCur(int cpuCore) {
-        return HwIoUtils.readSysfsIntValue(getPathCoreFreqCur(cpuCore));
+        return HwIoUtils.INSTANCE.readSysfsIntValue(getPathCoreFreqCur(cpuCore));
     }
 
     private static int readFreqMax(int cpuCore) {
-        return HwIoUtils.readSysfsIntValue(getPathCoreFreqMax(cpuCore));
+        return HwIoUtils.INSTANCE.readSysfsIntValue(getPathCoreFreqMax(cpuCore));
     }
 
     private static int readFreqMin(int cpuCore) {
-        return HwIoUtils.readSysfsIntValue(getPathCoreFreqMin(cpuCore));
+        return HwIoUtils.INSTANCE.readSysfsIntValue(getPathCoreFreqMin(cpuCore));
     }
 
     private static String readGovernor(int cpuCore) {
-        return HwIoUtils.readSysfsStringValue(getPathCoreGov(cpuCore));
+        return HwIoUtils.INSTANCE.readSysfsStringValue(getPathCoreGov(cpuCore));
     }
 
     public static String getPathCoreBase(int cpuCore) {
@@ -234,75 +234,75 @@ public class CpuReader {
         @Override public void run() {
             cpuInformation = getCpuInformationBlocking();
             // if the cpu information contains an invalid value AND we are not using root, finish
-            if (cpuInformation.isValid() || !RootCheck.isRooted()) {
+            if (cpuInformation.isValid() || !RootCheck.INSTANCE.isRooted()) {
                 hasFinished = true;
             } else {
                 cpuInformation.resetInvalid();
             }
 
             while (!hasFinished) {
-                if (cpuInformation.coreCount == Constants.NOT_INITIALIZED) {
-                    Command cmd = HwIoUtils.readFileRoot(T_PATH_COUNT, readFileListener);
+                if (cpuInformation.coreCount == Constants.INSTANCE.getNOT_INITIALIZED()) {
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(T_PATH_COUNT, readFileListener);
                     if (cmd == null) {
                         break;
                     } else {
-                        cpuInformation.coreCount = Constants.INITIALIZATION_STARTED;
+                        cpuInformation.coreCount = Constants.INSTANCE.getINITIALIZATION_STARTED();
                     }
                 }
                 if (cpuInformation.freqAvail == null) {
-                    Command cmd = HwIoUtils.readFileRoot(T_PATH_FREQ_AVAIL, readFileListener);
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(T_PATH_FREQ_AVAIL, readFileListener);
                     if (cmd == null) {
                         break;
                     } else {
                         cpuInformation.freqAvail = Collections.emptyList();
                     }
                 }
-                if (cpuInformation.freqCur == Constants.NOT_INITIALIZED) {
-                    Command cmd = HwIoUtils.readFileRoot(T_PATH_FREQ_CUR, readFileListener);
+                if (cpuInformation.freqCur == Constants.INSTANCE.getNOT_INITIALIZED()) {
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(T_PATH_FREQ_CUR, readFileListener);
                     if (cmd == null) {
                         break;
                     } else {
-                        cpuInformation.freqCur = Constants.INITIALIZATION_STARTED;
+                        cpuInformation.freqCur = Constants.INSTANCE.getINITIALIZATION_STARTED();
                     }
                 }
-                if (cpuInformation.freqMax == Constants.NOT_INITIALIZED) {
-                    Command cmd = HwIoUtils.readFileRoot(T_PATH_FREQ_MAX, readFileListener);
+                if (cpuInformation.freqMax == Constants.INSTANCE.getNOT_INITIALIZED()) {
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(T_PATH_FREQ_MAX, readFileListener);
                     if (cmd == null) {
                         break;
                     } else {
-                        cpuInformation.freqMax = Constants.INITIALIZATION_STARTED;
+                        cpuInformation.freqMax = Constants.INSTANCE.getINITIALIZATION_STARTED();
                     }
                 }
-                if (cpuInformation.freqMin == Constants.NOT_INITIALIZED) {
-                    Command cmd = HwIoUtils.readFileRoot(T_PATH_FREQ_MIN, readFileListener);
+                if (cpuInformation.freqMin == Constants.INSTANCE.getNOT_INITIALIZED()) {
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(T_PATH_FREQ_MIN, readFileListener);
                     if (cmd == null) {
                         break;
                     } else {
-                        cpuInformation.freqMin = Constants.INITIALIZATION_STARTED;
+                        cpuInformation.freqMin = Constants.INSTANCE.getINITIALIZATION_STARTED();
                     }
                 }
                 if (cpuInformation.govAvail == null) {
-                    Command cmd = HwIoUtils.readFileRoot(T_PATH_GOV_AVAIL, readFileListener);
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(T_PATH_GOV_AVAIL, readFileListener);
                     if (cmd == null) {
                         break;
                     } else {
                         cpuInformation.govAvail = Collections.emptyList();
                     }
                 }
-                if (Constants.NOT_INITIALIZED_STR.equals(cpuInformation.govCur)) {
-                    Command cmd = HwIoUtils.readFileRoot(T_PATH_GOV, readFileListener);
+                if (Constants.INSTANCE.getNOT_INITIALIZED_STR().equals(cpuInformation.govCur)) {
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(T_PATH_GOV, readFileListener);
                     if (cmd == null) {
                         break;
                     } else {
-                        cpuInformation.govCur = Constants.INITIALIZATION_STARTED_STR;
+                        cpuInformation.govCur = Constants.INSTANCE.getINITIALIZATION_STARTED_STR();
                     }
                 }
-                if (cpuInformation.temperature == Constants.NOT_INITIALIZED) {
-                    Command cmd = HwIoUtils.readFileRoot(T_PATH_TEMPERATURE, readFileListener);
+                if (cpuInformation.temperature == Constants.INSTANCE.getNOT_INITIALIZED()) {
+                    Command cmd = HwIoUtils.INSTANCE.readFileRoot(T_PATH_TEMPERATURE, readFileListener);
                     if (cmd == null) {
                         break;
                     } else {
-                        cpuInformation.temperature = Constants.INITIALIZATION_STARTED;
+                        cpuInformation.temperature = Constants.INSTANCE.getINITIALIZATION_STARTED();
                     }
                 }
 
@@ -328,21 +328,21 @@ public class CpuReader {
         private final HwIoUtils.ReadFileListener readFileListener = new HwIoUtils.ReadFileListener() {
             @Override public void onFileRead(String path, String content) {
                 if (T_PATH_COUNT.equals(path)) {
-                    cpuInformation.coreCount = HwUtils.tryParseInt(content);
+                    cpuInformation.coreCount = HwUtils.INSTANCE.tryParseInt(content);
                 } else if (T_PATH_FREQ_AVAIL.equals(path)) {
                     cpuInformation.freqAvail = readFreqAvail(content);
                 } else if (T_PATH_FREQ_CUR.equals(path)) {
-                    cpuInformation.freqCur = HwUtils.tryParseInt(content);
+                    cpuInformation.freqCur = HwUtils.INSTANCE.tryParseInt(content);
                 } else if (T_PATH_FREQ_MAX.equals(path)) {
-                    cpuInformation.freqMax = HwUtils.tryParseInt(content);
+                    cpuInformation.freqMax = HwUtils.INSTANCE.tryParseInt(content);
                 } else if (T_PATH_FREQ_MIN.equals(path)) {
-                    cpuInformation.freqMin = HwUtils.tryParseInt(content);
+                    cpuInformation.freqMin = HwUtils.INSTANCE.tryParseInt(content);
                 } else if (T_PATH_GOV_AVAIL.equals(path)) {
                     cpuInformation.govAvail = readGovAvail(content);
                 } else if (T_PATH_GOV.equals(path)) {
                     cpuInformation.govCur = content;
                 } else if (T_PATH_TEMPERATURE.equals(path)) {
-                    cpuInformation.temperature = HwUtils.tryParseInt(content);
+                    cpuInformation.temperature = HwUtils.INSTANCE.tryParseInt(content);
                 }
             }
         };

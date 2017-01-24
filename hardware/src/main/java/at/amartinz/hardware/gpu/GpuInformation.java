@@ -39,42 +39,42 @@ public class GpuInformation {
     private static final String TAG = GpuInformation.class.getSimpleName();
 
     public List<Integer> freqAvailable = Collections.emptyList();
-    public int freqCur = Constants.NOT_INITIALIZED;
-    public int freqMax = Constants.NOT_INITIALIZED;
-    public int freqMin = Constants.NOT_INITIALIZED;
+    public int freqCur = Constants.INSTANCE.getNOT_INITIALIZED();
+    public int freqMax = Constants.INSTANCE.getNOT_INITIALIZED();
+    public int freqMin = Constants.INSTANCE.getNOT_INITIALIZED();
 
     public void resetInvalid() {
-        if (freqCur == Constants.INVALID) {
-            freqCur = Constants.NOT_INITIALIZED;
+        if (freqCur == Constants.INSTANCE.getINVALID()) {
+            freqCur = Constants.INSTANCE.getNOT_INITIALIZED();
         }
-        if (freqMax == Constants.INVALID) {
-            freqMax = Constants.NOT_INITIALIZED;
+        if (freqMax == Constants.INSTANCE.getINVALID()) {
+            freqMax = Constants.INSTANCE.getNOT_INITIALIZED();
         }
-        if (freqMin == Constants.INVALID) {
-            freqMin = Constants.NOT_INITIALIZED;
+        if (freqMin == Constants.INSTANCE.getINVALID()) {
+            freqMin = Constants.INSTANCE.getNOT_INITIALIZED();
         }
     }
 
     public boolean isInitializing() {
-        if (((freqCur == Constants.NOT_INITIALIZED) ||
-             (freqCur == Constants.INITIALIZATION_STARTED))) {
+        if (((freqCur == Constants.INSTANCE.getNOT_INITIALIZED()) ||
+             (freqCur == Constants.INSTANCE.getINITIALIZATION_STARTED()))) {
             return true;
         }
-        if (((freqMax == Constants.NOT_INITIALIZED) ||
-             (freqMax == Constants.INITIALIZATION_STARTED))) {
+        if (((freqMax == Constants.INSTANCE.getNOT_INITIALIZED()) ||
+             (freqMax == Constants.INSTANCE.getINITIALIZATION_STARTED()))) {
             return true;
         }
-        if (((freqMin == Constants.NOT_INITIALIZED) ||
-             (freqMin == Constants.INITIALIZATION_STARTED))) {
+        if (((freqMin == Constants.INSTANCE.getNOT_INITIALIZED()) ||
+             (freqMin == Constants.INSTANCE.getINITIALIZATION_STARTED()))) {
             return true;
         }
         return false;
     }
 
     public boolean isValid() {
-        return (((freqCur != Constants.NOT_INITIALIZED) && (freqCur != Constants.INVALID)) &&
-                ((freqMax != Constants.NOT_INITIALIZED) && (freqMax != Constants.INVALID)) &&
-                ((freqMin != Constants.NOT_INITIALIZED) && (freqMin != Constants.INVALID)));
+        return (((freqCur != Constants.INSTANCE.getNOT_INITIALIZED()) && (freqCur != Constants.INSTANCE.getINVALID())) &&
+                ((freqMax != Constants.INSTANCE.getNOT_INITIALIZED()) && (freqMax != Constants.INSTANCE.getINVALID())) &&
+                ((freqMin != Constants.INSTANCE.getNOT_INITIALIZED()) && (freqMin != Constants.INSTANCE.getINVALID())));
     }
 
     public String freqAsMhzReadable(final int frequency) {
@@ -92,19 +92,19 @@ public class GpuInformation {
      * @return The tagged and converted string OR null if it can not be converted
      */
     @Nullable public static String toMhz(final String mhzString) {
-        int value = Constants.INVALID;
+        int value = Constants.INSTANCE.getINVALID();
         if (!TextUtils.isEmpty(mhzString)) {
             try {
-                value = HwUtils.tryParseInt(mhzString) / 1000000;
+                value = HwUtils.INSTANCE.tryParseInt(mhzString) / 1000000;
             } catch (NumberFormatException exc) {
-                if (Constants.DEBUG) {
+                if (Constants.INSTANCE.getDEBUG()) {
                     Log.e(TAG, "toMhz", exc);
                 }
-                value = Constants.INVALID;
+                value = Constants.INSTANCE.getINVALID();
             }
         }
 
-        if (value != Constants.INVALID) {
+        if (value != Constants.INSTANCE.getINVALID()) {
             return String.valueOf(value) + " MHz";
         }
         return null;

@@ -46,12 +46,12 @@ public class CpuCore {
     }
 
     public CpuCore setCurrent(String current) {
-        this.current = HwUtils.tryParseInt(current, 0);
+        this.current = HwUtils.INSTANCE.tryParseInt(current, 0);
         return this;
     }
 
     public CpuCore setMax(String max) {
-        this.max = HwUtils.tryParseInt(max, 0);
+        this.max = HwUtils.INSTANCE.tryParseInt(max, 0);
         return this;
     }
 
