@@ -26,6 +26,7 @@ package at.amartinz.hardware;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import at.amartinz.hardware.utils.HwIoUtils;
@@ -66,6 +67,10 @@ public class Emmc {
             sInstance = new Emmc();
         }
         return sInstance;
+    }
+
+    public static boolean isSupported() {
+        return new File("/sys/class/block/mmcblk0/device/").exists();
     }
 
     @Nullable public String getCid() {
